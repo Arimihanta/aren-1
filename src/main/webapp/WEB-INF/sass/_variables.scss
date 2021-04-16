@@ -1,0 +1,66 @@
+// VARIBLES
+@font-face {
+    font-family: "Seravek";
+    src: url("../font/seravek-light-webfont.woff") format('woff');
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("../font/seravek-regular-webfont.woff") format('woff');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("../font/seravek-medium-webfont.woff") format('woff');
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: "Seravek";
+    src: url("../font/seravek-bold-webfont.woff") format('woff');
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url("../font/material-icons.woff") format('woff2');
+}
+
+$background-color: white;
+$primary-color: #B84000 !default;
+$secondary-color: #4D9999 !default;
+$primary-color-light: change-color($primary-color, $lightness: 95%);
+$secondary-color-light: change-color($secondary-color, $lightness: 95%);
+$selection-color: change-color($secondary-color, $saturation: 60%, $lightness: 60%) !default;
+
+$text-select-color: #C6E4E3;
+
+$success-color: #26A96C !default;
+/*$error-color: color("red", "base") !default;*/
+$link-color: #336362 !default;
+$font-color-light: #B2B2B2 !default;
+$font-stack: Seravek, Helvetica, Roboto, Arial, sans-serif;
+
+$h1-fontsize: 1.4em !default;
+$h2-fontsize: 1.2em !default;
+$h3-fontsize: 1em !default;
+$h4-fontsize: 0.8em !default;
+$h5-fontsize: 0.8em !default;
+
+$blue-color: #4D9999;
+$red-color: #BA4100;
+$green-color: #26A96C;
+$grey-color: #B2B2B2;
+$grey-color-light: #DDDFE2;
+$grey-color-dark: #808080;
+
+:root {
+    --blue-color: #{$blue-color};
+    --red-color: #{$red-color};
+    --green-color: #{$green-color};
+    --grey-color: #{$grey-color};
+}
