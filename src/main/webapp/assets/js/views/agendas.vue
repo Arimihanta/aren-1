@@ -48,7 +48,7 @@
         </div>
       </div>
       <div v-if="isInserted" class="success-mess">
-        <p class="mess-text">Programme ajoutée avec succès</p>
+        <p class="mess-text">Programme ajouté avec succès</p>
         <button
           class="exit-btn"
           @click="

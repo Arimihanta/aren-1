@@ -7,9 +7,9 @@
         <properties>
             <!-- Connection information -->
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.url" value=""/> <!--Changer ici-->
-            <property name="hibernate.connection.username" value=""/> <!--Changer ici-->
-            <property name="hibernate.connection.password" value=""/> <!--Changer ici-->
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/aren_db"/>
+            <property name="hibernate.connection.username" value="aren"/>
+            <property name="hibernate.connection.password" value="aren1234"/>
             <property name="hibernate.default_schema" value="public"/>
             <!-- SQL and DB config -->
             <property name="hibernate.generate_statistics" value="false"/>
