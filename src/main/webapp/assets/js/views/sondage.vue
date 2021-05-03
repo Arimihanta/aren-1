@@ -54,7 +54,7 @@
                 @click="vote(subtheme, `FOR`)"
                 v-if="checkVoteAvalaibility(subtheme.id)"
               >
-                <span>Intervenir | {{ subtheme.for }}</span>
+                <span>Participation certaine | {{ subtheme.for }}</span>
               </button>
             </td>
           </tr>
@@ -66,7 +66,7 @@
                 v-if="checkVoteAvalaibility(subtheme.id)"
               >
                 <span
-                  >Intervenir selon son évolution | {{ subtheme.neutral }}</span
+                  >Participation possible | {{ subtheme.neutral }}</span
                 >
               </button>
             </td>
@@ -78,7 +78,7 @@
                 @click="vote(subtheme, `AGAINST`)"
                 v-if="checkVoteAvalaibility(subtheme.id)"
               >
-                <span>Observer | {{ subtheme.against }}</span>
+                <span>Simple observateur | {{ subtheme.against }}</span>
               </button>
             </td>
           </tr>
@@ -88,7 +88,7 @@
               :key="subtheme.id"
               class="text-centered"
             >
-              <span class="nb-total-vote">{{ subtheme.for }}</span>
+              <span class="nb-total-vote">{{ subtheme.for }} participant(s) </span>
             </td>
           </tr>
         </table>

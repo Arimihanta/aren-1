@@ -56,7 +56,7 @@
               <img
                 alt="image"
                 class="category-picture"
-                v-bind:src="program.img"
+                src='assets/img/calendar.png'
               />
             </div>
             <div>
