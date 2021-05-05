@@ -46,6 +46,7 @@
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
     <!-- For test -->
     <script src="assets/js/vendors/axios.js"></script>
+    <script src="assets/js/vendors/sweetalert.min.js"></script>
 
     <% } else { %>
     <link rel="stylesheet" type="text/css" href="assets/css/quill.snow.css">
@@ -65,9 +66,9 @@
     <script src="assets/js/vueCfg.js"></script>
 
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
-    <!-- For test -->
+    
     <script src="assets/js/vendors/axios.js"></script>
-
+    <script src="assets/js/vendors/sweetalert.min.js"></script>
     <% }%>
 </head>
 
