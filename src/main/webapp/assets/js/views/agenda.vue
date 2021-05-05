@@ -228,29 +228,43 @@ module.exports = {
         },
       });
     },
-    modifyAgenda: function () {
-      new BrowserNotification("En cours de construction ....", {
-        body: "Modification de l'agenda",
-      });
+    modifyAgenda: async function () {
+      try {
+        let success = await axios({
+          method: "put",
+          url: `${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`,
+          data: this.editionProgram,
+        });
+        console.log(success)
+        swal("Succès!", "L'agenda a été modifié", "success").then((value) => {
+          this.program = {...this.editionProgram}
+          this.isEditMode = false;
+        });
+      } catch (error) {
+        swal("Erreur", `Une erreur s'est produite`, "error");
+        console.log(error);
+      }
     },
     deleteCurrentAgenda: function () {
       try {
         swal({
           title: "Êtes-vous sûr?",
-          text:
-            "L'agenda sera supprimé",
+          text: "L'agenda sera supprimé",
           icon: "warning",
           buttons: ["Annuler", true],
           dangerMode: true,
-        }).then( async (willDelete) => {
+        }).then(async (willDelete) => {
           if (willDelete) {
-            let _ = await axios.delete(`${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`);
-            swal("Succès!", "L'agenda a été supprimé", "success").then((value) => {
-              location.href = baseUrl;
-            });
+            let _ = await axios.delete(
+              `${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`
+            );
+            swal("Succès!", "L'agenda a été supprimé", "success").then(
+              (value) => {
+                location.href = baseUrl;
+              }
+            );
           }
         });
-
       } catch (error) {
         swal("Erreur!", `${error}`, "error");
         console.log(error);
