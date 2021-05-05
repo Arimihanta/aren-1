@@ -35,7 +35,7 @@
             v-if="!isEditMode"
             @click="
               () => {
-                deleteAgenda();
+                deleteCurrentAgenda();
               }
             "
           >
@@ -93,7 +93,14 @@
       </div>
       <div class="space-top"></div>
       <div v-if="isEditMode" class="space-top">
-        <button id="modifySondage" @click="()=>{modifyAgenda()}">
+        <button
+          id="modifySondage"
+          @click="
+            () => {
+              modifyAgenda();
+            }
+          "
+        >
           Modifier l' agenda
         </button>
       </div>
@@ -226,12 +233,27 @@ module.exports = {
         body: "Modification de l'agenda",
       });
     },
-    deleteAgenda: async function () {
+    deleteCurrentAgenda: function () {
       try {
-        let _= await axios.delete(`${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`);
-        location.href = baseUrl;
+        swal({
+          title: "Êtes-vous sûr?",
+          text:
+            "L'agenda sera supprimé",
+          icon: "warning",
+          buttons: ["Annuler", true],
+          dangerMode: true,
+        }).then( async (willDelete) => {
+          if (willDelete) {
+            let _ = await axios.delete(`${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`);
+            swal("Succès!", "L'agenda a été supprimé", "success").then((value) => {
+              location.href = baseUrl;
+            });
+          }
+        });
+
       } catch (error) {
-        console.log(error)
+        swal("Erreur!", `${error}`, "error");
+        console.log(error);
       }
     },
   },

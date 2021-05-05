@@ -47,19 +47,6 @@
           </button>
         </div>
       </div>
-      <div v-if="isInserted" class="success-mess">
-        <p class="mess-text">Programme ajouté avec succès</p>
-        <button
-          class="exit-btn"
-          @click="
-            () => {
-              isInserted = false;
-            }
-          "
-        >
-          fermer
-        </button>
-      </div>
       <div v-if="isNotInserted" class="error-mess">
         <p class="mess-text">
           Une érreur est survenue (veuillez remplir tous les champs
@@ -191,11 +178,10 @@ module.exports = {
         this.url = "";
         this.selectedDate = new Date();
 
-        this.isNotInserted = false;
-        this.isInserted = true;
+        swal("Succès!", "L'agenda a été créé", "success");
+
       } catch (error) {
-        this.isNotInserted = true;
-        this.isInserted = false;
+        swal("Erreur!", `${error}`, "error");
         console.error(error);
       }
     },
