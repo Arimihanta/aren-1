@@ -180,6 +180,7 @@ module.exports = {
       program: false,
       editionProgram: false,
       user: false,
+      timezone: "",
     };
   },
   created() {
