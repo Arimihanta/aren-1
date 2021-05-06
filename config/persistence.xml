@@ -26,6 +26,9 @@
             <!--property name="hibernate.hbm2ddl.auto" value="drop-and-create"/-->
             <!--property name="hibernate.hbm2ddl.import_files" value="META-INF/init.sql"/-->
 
+            <!-- DB update -->
+            <!-- <property name="hibernate.hbm2ddl.auto" value="update"/> -->
+
             <!-- Pool configuration -->
             <property name="connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider"/>
             <property name="hibernate.c3p0.acquire_increment" value="5"/>
