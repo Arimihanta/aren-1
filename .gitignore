@@ -13,7 +13,7 @@ buildNumber.properties
 .vscode/
 
 # Configuration files
-#src/main/resources/application.properties
-#src/main/resources/META-INF/persistence.xml
+src/main/resources/application.properties
+src/main/resources/META-INF/persistence.xml
 
 launch.json
