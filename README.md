@@ -60,7 +60,7 @@ Uncomment the two following lines to allow the application to build the whole da
 Restart your webserver.
 
 Uncomment the line
-    <property name="hibernate.hbm2ddl.auto" value="update"/>
+    `<property name="hibernate.hbm2ddl.auto" value="update"/>`
 
 **! WARNING !**
 **To avoid any data loss  yous have to re-comment those previous lines. Otherwise the full database will be rebuilt at every restart of the application !**
