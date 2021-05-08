@@ -28,10 +28,10 @@
 
         <span class="block">{{ selectedDate.toISOString() }}</span>
 
-        <label class="block space-top">
+        <!-- <label class="block space-top">
           <span>image</span>
           <input type="text" v-model="img" />
-        </label>
+        </label> -->
 
         <label class="block space-top">
           <span>URL (si nécessaire)</span>
@@ -143,7 +143,7 @@ module.exports = {
       text: "",
       expirationDate: "",
       url: "",
-      img: "",
+      //img: "",
       selectedDate: new Date(),
       timezone: "",
       isInserted: false,
