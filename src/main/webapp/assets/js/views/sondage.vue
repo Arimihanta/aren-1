@@ -65,9 +65,7 @@
                 @click="vote(subtheme, `NEUTRAL`)"
                 v-if="checkVoteAvalaibility(subtheme.id)"
               >
-                <span
-                  >Participation possible | {{ subtheme.neutral }}</span
-                >
+                <span>Participation possible | {{ subtheme.neutral }}</span>
               </button>
             </td>
           </tr>
@@ -88,7 +86,9 @@
               :key="subtheme.id"
               class="text-centered"
             >
-              <span class="nb-total-vote">{{ subtheme.for }} participant(s) </span>
+              <span class="nb-total-vote"
+                >{{ subtheme.for }} participant(s)
+              </span>
             </td>
           </tr>
         </table>
@@ -212,8 +212,11 @@
 </style>
 <script>
 const getUrl = window.location;
-const baseUrl =
+let baseUrl =
   getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
 module.exports = {
   data() {
     return {
@@ -276,7 +279,7 @@ module.exports = {
         (el) => el.subThemeId.id || el.subThemeId
       );
 
-      const arr = filteredBySubTheme.filter(el => el == _subthemeId);
+      const arr = filteredBySubTheme.filter((el) => el == _subthemeId);
 
       return arr.length <= 0;
     },

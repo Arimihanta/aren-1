@@ -67,7 +67,6 @@
   </div>
 </template>
 
-
 <style scoped>
 .box-container {
   border: 1px solid #a1a3a1;
@@ -130,11 +129,13 @@
 }
 </style>
 
-
 <script>
 const getUrl = window.location;
-const baseUrl =
+let baseUrl =
   getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
 module.exports = {
   data() {
     return {
@@ -170,7 +171,7 @@ module.exports = {
             date: selectedDate,
           },
         });
-        console.log(resp)
+        console.log(resp);
 
         this.name = "";
         this.text = "";
@@ -179,7 +180,6 @@ module.exports = {
         this.selectedDate = new Date();
 
         swal("Succès!", "L'agenda a été créé", "success");
-
       } catch (error) {
         swal("Erreur!", `${error}`, "error");
         console.error(error);
