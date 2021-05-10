@@ -9,7 +9,9 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.util.Set;
 
 @RequestScoped
@@ -51,10 +53,16 @@ public class FDThemeRESTFacade extends AbstractRESTFacade<FDTheme>{
         return fdThemeService.findAll(withChoices, true);
     }
 
-    @Override
+    /**
+     * Remove all the choices and votes of a theme
+     *
+     * @param id
+     */
+    @DELETE
+    @Path("delete/{id}")
     @RolesAllowed({"ADMIN"})
-    public void remove(Long id) {
-        super.remove(id);
+    public void clear(@PathParam("id") Long id) {
+        fdThemeService.clear(id);
     }
 
     @Override

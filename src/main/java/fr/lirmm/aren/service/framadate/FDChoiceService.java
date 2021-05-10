@@ -55,6 +55,4 @@ public class FDChoiceService extends AbstractService<FDChoice> {
         }
         return results.get(0);
     }
-
-
 }
