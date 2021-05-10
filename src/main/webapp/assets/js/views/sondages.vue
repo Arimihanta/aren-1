@@ -313,11 +313,11 @@
 
 <script>
 const getUrl = window.location;
-let baseUrl =
-  getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
-if (baseUrl.endsWith("/")) {
-  baseUrl = baseUrl.slice(0, -1);
-}
+// let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+// if (baseUrl.endsWith("/")) {
+//   baseUrl = baseUrl.slice(0, -1);
+// }
+let baseUrl = getUrl.protocol + "//" + getUrl.host
 Vue.component("modal", {
   template: "#modal-template",
 });
