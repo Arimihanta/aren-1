@@ -3,6 +3,19 @@
     <base-layout id="voting">
       <template v-slot:title>
         <h1>Sondage</h1>
+        <div v-if="loggedUser.is('ADMIN') || loggedUser.is('SUPERADMIN')">
+          <button
+            title="Supprimer le sondage"
+            class="delete-btn space-top"
+            @click="
+              () => {
+                deleteCurrentSondage();
+              }
+            "
+          >
+            <img alt="edit" src="assets/img/delete.png" />
+          </button>
+        </div>
       </template>
       <div class="theme-container">
         <br />
@@ -128,6 +141,19 @@
   max-height: 15em;
 }
 
+.delete-btn {
+  background-color: #dd2034;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: white;
+  border-color: transparent;
+  box-shadow: 0.1rem 0.1rem 1rem #dd2034;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+}
+
 .btn-vote {
   display: flex;
   justify-content: center;
@@ -216,7 +242,7 @@ const getUrl = window.location;
 // if (baseUrl.endsWith("/")) {
 //   baseUrl = baseUrl.slice(0, -1);
 // }
-let baseUrl = getUrl.protocol + "//" + getUrl.host
+let baseUrl = getUrl.protocol + "//" + getUrl.host;
 module.exports = {
   data() {
     return {
@@ -224,14 +250,40 @@ module.exports = {
       theme: false,
       choices: [],
       votes: [],
+      loggedUser: false,
     };
   },
   created() {
     this.fetchTheme();
     this.fetchUser();
     this.fetchVotes();
+    this.getCurrentUser();
   },
   methods: {
+    getCurrentUser: function () {
+      ArenService.Users.getLoged({
+        onSuccess: (logedUser) => {
+          this.loggedUser = logedUser;
+          console.log(logedUser)
+          ArenService.NotificationListener.listen({
+            onMessage: (notif) => {
+              this.user.notifications.push(notif);
+              let message = this.$t(
+                "notification." + notif.content.message,
+                notif.content.details
+              );
+              this.$toast(message);
+              new BrowserNotification("AREN", {
+                body: message,
+              });
+            },
+          });
+        },
+        onError: (e) => {
+          this.logout();
+        },
+      });
+    },
     fetchUser: async function () {
       const _user = await axios.get(`${baseUrl}/ws/users/me`);
       this.user = _user.data;
@@ -282,6 +334,31 @@ module.exports = {
       const arr = filteredBySubTheme.filter((el) => el == _subthemeId);
 
       return arr.length <= 0;
+    },
+    deleteCurrentSondage: function () {
+      try {
+        swal({
+          title: "Êtes-vous sûr?",
+          text: "Le sondage sera supprimé avec toutes ses informations",
+          icon: "warning",
+          buttons: ["Annuler", true],
+          dangerMode: true,
+        }).then(async (willDelete) => {
+          if (willDelete) {
+            let _ = await axios.delete(
+              `${baseUrl}/ws/themes/delete/${this.$route.query.id}`
+            );
+            swal("Succès!", "Le sondage a été supprimé", "success").then(
+              (value) => {
+                location.href = baseUrl;
+              }
+            );
+          }
+        });
+      } catch (error) {
+        swal("Erreur!", `${error}`, "error");
+        console.log(error);
+      }
     },
   },
 };
