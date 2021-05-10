@@ -234,12 +234,16 @@ module.exports = {
     },
     copyToClipBoard(text) {
       const getUrl = window.location;
-      const baseUrl =
+      let baseUrl =
         getUrl.protocol +
         "//" +
         getUrl.host +
         "/" +
         getUrl.pathname.split("/")[1];
+      if (baseUrl.endsWith("/")) {
+        baseUrl = baseUrl.slice(0, -1);
+      }
+
       navigator.clipboard.writeText(`${baseUrl}${text}`).then(
         function () {
           alert("lien copié dans le presse-papier");

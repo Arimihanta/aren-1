@@ -56,17 +56,14 @@
               <img
                 alt="image"
                 class="category-picture"
-                src='assets/img/calendar.png'
+                src="assets/img/calendar.png"
               />
             </div>
             <div>
               <h2 v-bind:title="program.title">{{ program.title }}</h2>
             </div>
             <div class="card-footer light-color">
-              <span
-                >Le
-                {{ new Date(program.date).toLocaleString() }}</span
-              >
+              <span>Le {{ new Date(program.date).toLocaleString() }}</span>
             </div>
           </router-link>
         </div>
@@ -107,8 +104,11 @@
 
 <script>
 const getUrl = window.location;
-const baseUrl =
+let baseUrl =
   getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
 module.exports = {
   data() {
     return {

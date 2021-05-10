@@ -171,8 +171,11 @@
 
 <script>
 const getUrl = window.location;
-const baseUrl =
+let baseUrl =
   getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
 module.exports = {
   data() {
     return {
@@ -236,9 +239,9 @@ module.exports = {
           url: `${baseUrl}/ws/agenda/calendars/${this.$route.query.id}`,
           data: this.editionProgram,
         });
-        console.log(success)
+        console.log(success);
         swal("Succès!", "L'agenda a été modifié", "success").then((value) => {
-          this.program = {...this.editionProgram}
+          this.program = { ...this.editionProgram };
           this.isEditMode = false;
         });
       } catch (error) {

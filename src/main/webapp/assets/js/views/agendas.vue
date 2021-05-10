@@ -28,10 +28,10 @@
 
         <span class="block">{{ selectedDate.toISOString() }}</span>
 
-        <label class="block space-top">
+        <!-- <label class="block space-top">
           <span>image</span>
           <input type="text" v-model="img" />
-        </label>
+        </label> -->
 
         <label class="block space-top">
           <span>URL (si nécessaire)</span>
@@ -66,7 +66,6 @@
     </base-layout>
   </div>
 </template>
-
 
 <style scoped>
 .box-container {
@@ -130,11 +129,13 @@
 }
 </style>
 
-
 <script>
 const getUrl = window.location;
-const baseUrl =
+let baseUrl =
   getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+if (baseUrl.endsWith("/")) {
+  baseUrl = baseUrl.slice(0, -1);
+}
 module.exports = {
   data() {
     return {
@@ -142,7 +143,7 @@ module.exports = {
       text: "",
       expirationDate: "",
       url: "",
-      img: "",
+      //img: "",
       selectedDate: new Date(),
       timezone: "",
       isInserted: false,
@@ -170,7 +171,7 @@ module.exports = {
             date: selectedDate,
           },
         });
-        console.log(resp)
+        console.log(resp);
 
         this.name = "";
         this.text = "";
@@ -179,7 +180,6 @@ module.exports = {
         this.selectedDate = new Date();
 
         swal("Succès!", "L'agenda a été créé", "success");
-
       } catch (error) {
         swal("Erreur!", `${error}`, "error");
         console.error(error);
