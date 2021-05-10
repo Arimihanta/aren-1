@@ -57,7 +57,7 @@ Uncomment the two following lines to allow the application to build the whole da
 
     <!--property name="hibernate.hbm2ddl.auto" value="drop-and-create"/-->
     <!--property name="hibernate.hbm2ddl.import_files" value="META-INF/init.sql"/-->
-Restart your webserver.
+####Restart your webserver.
 
 Uncomment the line
     `<property name="hibernate.hbm2ddl.auto" value="update"/>`

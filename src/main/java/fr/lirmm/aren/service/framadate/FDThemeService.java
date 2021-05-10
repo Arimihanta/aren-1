@@ -1,4 +1,6 @@
 package fr.lirmm.aren.service.framadate;
+import fr.lirmm.aren.model.Comment;
+import fr.lirmm.aren.model.framadate.FDChoice;
 import fr.lirmm.aren.model.framadate.FDTheme;
 import fr.lirmm.aren.service.AbstractService;
 
@@ -44,5 +46,51 @@ public class FDThemeService extends AbstractService<FDTheme> {
             throw new NotFoundException();
         }
         return results.get(0);
+    }
+
+    /**
+     *
+     * @param fdThemeId
+     */
+    public void clear(Long fdThemeId) {
+        this.transactionBegin();
+        List<FDChoice> choices = getEntityManager().createQuery("SELECT c "
+                + "FROM FDChoice c "
+                + "WHERE c.themeId.id = :fdThemeId ", FDChoice.class)
+                .setParameter("fdThemeId", fdThemeId)
+                .getResultList();
+        if (!choices.isEmpty()) {
+            for(FDChoice choice : choices){
+                this.clearVotes(choice.getId());
+            }
+        }
+        try{
+            getEntityManager().createQuery("DELETE FROM FDChoice fdChoice "
+                    + "WHERE fdChoice.themeId.id = :fdThemeId")
+                    .setParameter("fdThemeId", fdThemeId)
+                    .executeUpdate();
+
+            getEntityManager().createQuery("DELETE FROM FDTheme fdTheme "
+                    + "WHERE fdTheme.id = :fdThemeId")
+                    .setParameter("fdThemeId", fdThemeId)
+                    .executeUpdate();
+        }catch(Exception ex){
+            System.err.println("Erreur : "+ex.getMessage());
+        }
+
+        this.commit();
+    }
+
+    /**
+     *
+     * @param fdChoiceId
+     */
+    public void clearVotes(Long fdChoiceId) {
+        this.transactionBegin();
+        getEntityManager().createQuery("DELETE FROM FDVote fdVote "
+                + "WHERE fdVote.subThemeId.id = :fdChoiceId")
+                .setParameter("fdChoiceId", fdChoiceId)
+                .executeUpdate();
+        this.commit();
     }
 }
