@@ -1,23 +1,22 @@
 package fr.lirmm.aren.ws.rest;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 
 import fr.lirmm.aren.service.CommentService;
 import fr.lirmm.aren.model.Comment;
 import fr.lirmm.aren.model.TagSet;
 import fr.lirmm.aren.service.BroadcasterService;
 import fr.lirmm.aren.service.HttpRequestService;
-import javax.ws.rs.PUT;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.Sse;
 import javax.ws.rs.sse.SseEventSink;
+import java.util.Set;
 
 /**
  * JAX-RS resource class for Comments managment
@@ -126,5 +125,12 @@ public class CommentRESTFacade extends AbstractRESTFacade<Comment> {
         commentService.updateTags(comment);
         broadcasterService.broadcastComment(comment);
         return comment.getTags();
+    }
+
+    @DELETE
+    @Path("/delete/{id}")
+    @PermitAll
+    public void findTreeById(@PathParam("id") Long id){
+        commentService.removeTreeComment(id) ;
     }
 }
