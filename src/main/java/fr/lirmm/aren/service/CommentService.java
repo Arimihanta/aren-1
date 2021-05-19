@@ -1,14 +1,12 @@
 package fr.lirmm.aren.service;
 
-import java.util.List;
+import java.util.*;
 
 import javax.ws.rs.NotFoundException;
 
 import fr.lirmm.aren.model.Comment;
 import fr.lirmm.aren.model.TagSet;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
+
 import java.util.function.BiConsumer;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -88,6 +86,51 @@ public class CommentService extends AbstractService<Comment> {
                 + "WHERE id IN :ids", Comment.class)
                 .setParameter("ids", ids)
                 .getResultList());
+    }
+
+    /**
+     *
+     * @param commentId
+     * @return
+     */
+    public void clear(Long commentId) {
+        Comment comment=this.find(commentId) ;
+        super.remove(comment);
+        this.afterRemove(comment) ;
+    }
+
+    public void removeTreeComment(Long id){
+        System.out.println("id : "+id);
+        List<Comment> comments = getEntityManager().createNativeQuery("WITH RECURSIVE _comments AS ( "
+                + "SELECT id, created,argumentation,end_container,end_offset,hypostases,moderated,opinion,proposed_tags,reformulation,selection,signaled,start_container,start_offset,tags,owner_id,debate_id,parent_id "
+                +"FROM comments "
+                + "WHERE id=?1 "
+                +"UNION SELECT c.id, c.created,c.argumentation,c.end_container,c.end_offset,c.hypostases,c.moderated,c.opinion,c.proposed_tags,c.reformulation,c.selection,c.signaled,c.start_container,c.start_offset,c.tags,c.owner_id,c.debate_id,c.parent_id "
+                +"FROM comments c "
+                +"INNER JOIN _comments _coms ON _coms.id=c.parent_id"
+                +") SELECT * FROM _comments "
+                +"ORDER BY id DESC", Comment.class)
+                .setParameter(1,id)
+                .getResultList();
+
+
+        if (!comments.isEmpty()) {
+            //Collections.sort(comments, (c1, c2) -> (c1.getParent()!=null && c2.getParent()!=null)?c1.getParent().getId().compareTo(c1.getParent().getId()):-1);
+
+            for(Comment comment : comments){
+                this.deleteNotification(comment.getId()) ;
+                this.remove(comment);
+            }
+        }
+    }
+
+    private void deleteNotification(Long idComment){
+        this.transactionBegin();
+        getEntityManager().createQuery("DELETE FROM Notification notif "
+                + "WHERE notif.comment.id = :idComment")
+                .setParameter("idComment", idComment)
+                .executeUpdate();
+        this.commit();
     }
 
     /**
@@ -181,4 +224,5 @@ public class CommentService extends AbstractService<Comment> {
     public void updateAllTags() {
         this.updateAllTags(null);
     }
+
 }
