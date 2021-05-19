@@ -131,11 +131,11 @@
 
 <script>
 const getUrl = window.location;
-let baseUrl =
-  getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
-if (baseUrl.endsWith("/")) {
-  baseUrl = baseUrl.slice(0, -1);
-}
+// let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
+// if (baseUrl.endsWith("/")) {
+//   baseUrl = baseUrl.slice(0, -1);
+// }
+let baseUrl = getUrl.protocol + "//" + getUrl.host;
 module.exports = {
   data() {
     return {
@@ -179,7 +179,9 @@ module.exports = {
         this.url = "";
         this.selectedDate = new Date();
 
-        swal("Succès!", "L'agenda a été créé", "success");
+        swal("Succès!", "L'agenda a été créé", "success").then((value) => {
+          location.href = baseUrl;
+        });
       } catch (error) {
         swal("Erreur!", `${error}`, "error");
         console.error(error);
