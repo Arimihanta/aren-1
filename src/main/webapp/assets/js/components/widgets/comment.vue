@@ -38,7 +38,9 @@
           </button>
 
           <button
-            v-if="clipboard && ($root.user.is('ADMIN') || $root.user.is('MODO'))"
+            v-if="
+              clipboard && ($root.user.is('ADMIN') || $root.user.is('MODO'))
+            "
             title="Exporter vers l'Influent"
             @click="shareComment()"
           >
@@ -48,7 +50,7 @@
           <button
             v-if="$root.user.is('ADMIN') || $root.user.is('MODO')"
             title="Supprimer le commentaire"
-            @click="deleteComment()"
+            @click="deleteComment(comment.id)"
           >
             <img
               class="copy-img"
@@ -170,6 +172,8 @@
 </style>
 
 <script>
+const getUrl = window.location;
+let baseUrl = getUrl.protocol + "//" + getUrl.host;
 module.exports = {
   props: [
     "comment",
@@ -261,9 +265,6 @@ module.exports = {
         .replace(/'/g, "&#039;");
     },
     copyToClipBoard(text) {
-      const getUrl = window.location;
-      let baseUrl = getUrl.protocol + "//" + getUrl.host;
-
       navigator.clipboard.writeText(`${baseUrl}${text}`).then(
         function () {
           alert("lien copié dans le presse-papier");
@@ -273,7 +274,7 @@ module.exports = {
         }
       );
     },
-    deleteComment() {
+    deleteComment(idComment) {
       try {
         swal({
           title: "Êtes-vous sûr?",
@@ -283,12 +284,14 @@ module.exports = {
           dangerMode: true,
         }).then(async (willDelete) => {
           if (willDelete) {
-            // let _ = await axios.delete(
-            //   `${baseUrl}/ws/themes/delete/${this.$route.query.id}`
-            // );
+            let _ = await axios.delete(
+              `${baseUrl}/ws/comments/delete/${idComment}`
+            );
+            console.log(idComment)
+            console.log(_)
             swal("Succès!", "Le commentaire a été supprimé", "success").then(
               (value) => {
-                // location.href = baseUrl;
+                location.reload();
               }
             );
           }
