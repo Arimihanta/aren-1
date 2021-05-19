@@ -32,8 +32,29 @@
                 `/debates/${comment.debate.id}?comment=${comment.id}`
               )
             "
+            title="Copier dans le presse papier"
           >
-            copier dans le presse papier
+            <img class="copy-img" alt="edit" src="assets/img/copy.png" />
+          </button>
+
+          <button
+            v-if="clipboard && ($root.user.is('ADMIN') || $root.user.is('MODO'))"
+            title="Exporter vers l'Influent"
+            @click="shareComment()"
+          >
+            <img class="copy-img" alt="edit" src="assets/img/share.png" />
+          </button>
+
+          <button
+            v-if="$root.user.is('ADMIN') || $root.user.is('MODO')"
+            title="Supprimer le commentaire"
+            @click="deleteComment()"
+          >
+            <img
+              class="copy-img"
+              alt="edit"
+              src="assets/img/deletecomment.png"
+            />
           </button>
 
           <!--tooltip v-if="!preview" v-bind:value="$t('helper.report_comment')">
@@ -141,6 +162,13 @@
   </div>
 </template>
 
+<style scoped>
+.copy-img {
+  width: 1rem;
+  height: 1rem;
+}
+</style>
+
 <script>
 module.exports = {
   props: [
@@ -234,13 +262,7 @@ module.exports = {
     },
     copyToClipBoard(text) {
       const getUrl = window.location;
-
-      // let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
-      // if (baseUrl.endsWith("/")) {
-      //   baseUrl = baseUrl.slice(0, -1);
-      // }
-
-      let baseUrl = getUrl.protocol + "//" + getUrl.host 
+      let baseUrl = getUrl.protocol + "//" + getUrl.host;
 
       navigator.clipboard.writeText(`${baseUrl}${text}`).then(
         function () {
@@ -250,6 +272,38 @@ module.exports = {
           console.error("Erreur du copie de lien");
         }
       );
+    },
+    deleteComment() {
+      try {
+        swal({
+          title: "Êtes-vous sûr?",
+          text: "Le commentaire sera supprimé avec toutes ses informations",
+          icon: "warning",
+          buttons: ["Annuler", true],
+          dangerMode: true,
+        }).then(async (willDelete) => {
+          if (willDelete) {
+            // let _ = await axios.delete(
+            //   `${baseUrl}/ws/themes/delete/${this.$route.query.id}`
+            // );
+            swal("Succès!", "Le commentaire a été supprimé", "success").then(
+              (value) => {
+                // location.href = baseUrl;
+              }
+            );
+          }
+        });
+      } catch (error) {
+        swal("Erreur!", `${error}`, "error");
+        console.log(error);
+      }
+    },
+    shareComment() {
+      try {
+        alert("share comment functionnality");
+      } catch (error) {
+        alert(error);
+      }
     },
   },
   beforeDestroy() {
