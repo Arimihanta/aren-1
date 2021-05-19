@@ -287,8 +287,6 @@ module.exports = {
             let _ = await axios.delete(
               `${baseUrl}/ws/comments/delete/${idComment}`
             );
-            console.log(idComment)
-            console.log(_)
             swal("Succès!", "Le commentaire a été supprimé", "success").then(
               (value) => {
                 location.reload();
