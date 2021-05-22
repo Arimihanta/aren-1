@@ -104,6 +104,13 @@ public class ODFService {
         row.appendChild(commentsList);
 
         File file = new File("/tmp/aren_export_" + System.currentTimeMillis() + ".odt");
+
+        File directory = new File("/tmp");
+        if (! directory.exists()){
+            directory.mkdir();
+        }
+        
+        file.createNewFile();
         this.outputDocument.save(file);
         return file;
     }
