@@ -492,7 +492,8 @@ public class DebateRESTFacade extends AbstractRESTFacade<Debate> {
     public Response export(@PathParam("id") Long id) throws Exception {
         Debate debate = debateService.findByUser(id, getUser(), true, true, false, false, false);
         File export = odfService.parseDebate(debate);
-        String fileName = debate.getDocument().getName().replaceAll("[^a-zA-Z0-9\\s]", "") + ".odt";
+        // String fileName = debate.getDocument().getName().replaceAll("[^a-zA-Z0-9\\s]", "") + ".odt";
+        String fileName = "aren_export_" + System.currentTimeMillis() + ".odt";
         return Response.ok(export)
                 .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
                 .header("Content-length", export.length())
