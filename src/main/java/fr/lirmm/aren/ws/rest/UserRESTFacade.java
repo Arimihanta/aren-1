@@ -158,10 +158,10 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
     }
 
     /**
-     * 
+     *
      * @param id
      * @param entity
-     * @return 
+     * @return
      */
     @Override
     @RolesAllowed({"USER"})
@@ -199,6 +199,7 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
         if (user.getInstitution() == null || !getUser().is(User.Authority.SUPERADMIN)) {
             user.setInstitution(institutionService.getReference(0L));
         }
+
         if (getUser().getAuthority() == User.Authority.GUEST) {
             user.setActive(false);
             super.create(user);
@@ -226,6 +227,8 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
     private void sendLink(User user, String subject, String body) throws MessagingException {
         Locale currentLocale = request.getLocale();
         ResourceBundle messages = ResourceBundle.getBundle("messages", currentLocale);
+        ResourceBundle application_config = ResourceBundle.getBundle("application", currentLocale);
+
 
         String token = authenticationTokenService.issueToken(user, 24L * 60 * 60);
         System.out.println(authenticationTokenService.parseToken(token).getIssuedDate());
@@ -246,8 +249,7 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
             localSubject = "AREN API token";
             localBody = token;
         }
-
-        mailingService.sendMail("noreply@aren.fr", user.getEmail(), localSubject, localBody);
+        mailingService.sendMail(application_config.getString("smtp.username"), user.getEmail(), localSubject, localBody);
     }
 
     /**
@@ -358,10 +360,8 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
     @Path("me")
     @RolesAllowed({"GUEST"})
     public User getAuthenticatedUser() {
-
         return getUser();
     }
-
     /**
      * Check the existance of an User by its username or mail
      *
