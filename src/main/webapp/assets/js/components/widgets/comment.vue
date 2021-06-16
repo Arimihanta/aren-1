@@ -49,7 +49,7 @@
 
           <button
             v-if="
-              ($root.user.is('ADMIN') || $root.user.is('MODO')) &&
+              ($root.user.is('ADMIN') || $root.user.is('MODO') || (comment.owner.id == $root.user.id) ) &&
               comment.comments.length < 1
             "
             title="Supprimer le commentaire"
