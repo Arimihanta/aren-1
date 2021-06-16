@@ -48,7 +48,10 @@
           </button>
 
           <button
-            v-if="$root.user.is('ADMIN') || $root.user.is('MODO')"
+            v-if="
+              ($root.user.is('ADMIN') || $root.user.is('MODO')) &&
+              comment.comments.length < 1
+            "
             title="Supprimer le commentaire"
             @click="deleteComment(comment.id)"
           >
