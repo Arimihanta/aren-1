@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import fr.lirmm.aren.model.ws.ResetPassword;
 import fr.lirmm.aren.service.InstitutionService;
 import fr.lirmm.aren.service.UserService;
 import fr.lirmm.aren.exception.AccessDeniedException;
@@ -222,7 +223,6 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
      * @param user
      * @param subject
      * @param body
-     * @param defautReturnUrl
      */
     private void sendLink(User user, String subject, String body) throws MessagingException {
         Locale currentLocale = request.getLocale();
@@ -239,6 +239,34 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
         String serverRoot = this.reverseProxy;
         if (serverRoot.length() == 0) {
             serverRoot = request.getRequestURL().substring(0, request.getRequestURL().length() - "/ws/users".length());
+        }
+
+        if (returnUrl != null && !returnUrl.isEmpty()) {
+            activationLink = serverRoot + returnUrl.replace("{token}", token);
+            localSubject = messages.getString(subject);
+            localBody = MessageFormat.format(messages.getString(body), activationLink, activationLink);
+        } else {
+            localSubject = "AREN API token";
+            localBody = token;
+        }
+        mailingService.sendMail(application_config.getString("smtp.username"), user.getEmail(), localSubject, localBody);
+    }
+
+    private void sendLinkResetPassword(User user, String subject, String body) throws MessagingException {
+        Locale currentLocale = request.getLocale();
+        ResourceBundle messages = ResourceBundle.getBundle("messages", currentLocale);
+        ResourceBundle application_config = ResourceBundle.getBundle("application", currentLocale);
+
+
+        String token = authenticationTokenService.issueToken(user, 24L * 60 * 60);
+        System.out.println(authenticationTokenService.parseToken(token).getIssuedDate());
+        String activationLink;
+        String localSubject;
+        String localBody;
+
+        String serverRoot = this.reverseProxy;
+        if (serverRoot.length() == 0) {
+            serverRoot=request.getRequestURL().substring(0, request.getRequestURL().length() - "/ws/users/resetPasswd".length()) ;
         }
 
         if (returnUrl != null && !returnUrl.isEmpty()) {
@@ -277,12 +305,32 @@ public class UserRESTFacade extends AbstractRESTFacade<User> {
         User user = getService().findByUsernameOrEmail(identifier);
         if (user != null && user.isActive()) {
             try {
-                sendLink(user, "mail_reset_password_subject", "mail_reset_password_body");
+                sendLinkResetPassword(user, "mail_reset_password_subject", "mail_reset_password_body");
             } catch (MessagingException ex) {
                 throw new RuntimeException();
             }
         }
         // else nothing happend, it avoids someone to bruteforce user
+    }
+
+    @PUT
+    @Path("resetPswd")
+    @RolesAllowed({"USER"})
+    public void resetPasswd(ResetPassword resetPasswd, @QueryParam("token") String token) {
+        // Mail token are 24h long, login token are 1 year long
+        // If this is a token from a mail, then it comes from a password reset requests
+        // so we do not check the old password
+        if (token != null && !token.isEmpty()) {
+            AuthenticationTokenDetails authToken = authenticationTokenService.parseToken(token);
+            if (authToken.getIssuedDate().plusSeconds(24 * 3600).isEqual(authToken.getExpirationDate())) {
+                userService.changePassword(getUser(), resetPasswd.getPassword());
+                getService().invalidateToken(getUser());
+                return;
+            }
+        }
+        authentificationService.validateCredentials(getUser().getUsername(), resetPasswd.getPassword());
+        userService.changePassword(getUser(), resetPasswd.getPassword());
+        getService().invalidateToken(getUser());
     }
 
     /**
