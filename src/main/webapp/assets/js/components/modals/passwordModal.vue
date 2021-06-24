@@ -43,7 +43,9 @@
         mounted() {
             this.$nextTick(() => {
                 if (this.$route.query.resetPassword && this.$route.query.token) {
-                    this.open();
+                    setTimeout(()=>{
+                        this.open()
+                    }, 2000)
                 }
             });
         },
