@@ -43,10 +43,11 @@
     <script src="assets/js/router.min.js"></script>
     <script src="assets/js/vueCfg.min.js"></script>
 
+    <!-- new dependecies -->
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
-    <!-- For test -->
     <script src="assets/js/vendors/axios.js"></script>
     <script src="assets/js/vendors/sweetalert.min.js"></script>
+    <script src="assets/js/vendors/vue-apexcharts.js"></script>
 
     <% } else { %>
     <link rel="stylesheet" type="text/css" href="assets/css/quill.snow.css">
@@ -66,9 +67,9 @@
     <script src="assets/js/vueCfg.js"></script>
 
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
-    
     <script src="assets/js/vendors/axios.js"></script>
     <script src="assets/js/vendors/sweetalert.min.js"></script>
+    <script src="assets/js/vendors/vue-apexcharts.js"></script>
     <% }%>
 </head>
 
@@ -103,6 +104,9 @@
                     </li>
                     <li v-if="user.is('ADMIN')">
                         <router-link to="/sondages" v-bind:class="{ active: $route.path === '/sondages' || $route.path === '/sondage' }">Sondages</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/votemajoritaire" v-bind:class="{ active: $route.path === '/votemajoritaire' }">Votes majoritaires</router-link>
                     </li>
                 </ul>
 

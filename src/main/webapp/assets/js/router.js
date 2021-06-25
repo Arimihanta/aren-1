@@ -18,7 +18,7 @@ const router = new VueRouter({
         {path: '/agenda', component: vueLoader('views/agenda')},
         {path: '/sondages', component: vueLoader('views/sondages')},
         {path: '/sondage', component: vueLoader('views/sondage')},
-        {path: '/test', component: vueLoader('views/test')},
+        {path: '/votemajoritaire', component: vueLoader('views/votemajoritaire')},
         {path: '*', component: vueLoader('views/404')},
     ]
 });
