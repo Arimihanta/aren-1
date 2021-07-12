@@ -40,8 +40,8 @@ public class FDThemeService extends AbstractService<FDTheme> {
         super.edit(fdTheme);
     }
 
-    public FDTheme find(Long fdPollId, boolean withChoices, boolean withVotes) {
-        List<FDTheme> results = generateQuery(fdPollId, withChoices,withVotes).getResultList();
+    public FDTheme find(Long themeId, boolean withChoices, boolean withVotes) {
+        List<FDTheme> results = generateQuery(themeId, withChoices,withVotes).getResultList();
         if (results.isEmpty()) {
             throw new NotFoundException();
         }

@@ -152,6 +152,42 @@ public abstract class AbstractService<T extends AbstractEntity> {
         }
     }
 
+    public T insert(T entity) {
+        // If ever the entity is attached, it needs to be detached
+        getEntityManager().detach(entity);
+        // If ever the id is set, it needs to be removed
+        entity.setId(null);
+
+        try {
+            this.transactionBegin();
+            getEntityManager().persist(entity);
+            getEntityManager().refresh(entity);
+            this.afterCreate(entity);
+            this.commit();
+        } catch (PersistenceException e) {
+            if (e.getCause() instanceof PropertyValueException) {
+                PropertyValueException cause = (PropertyValueException) e.getCause();
+                throw InsertEntityException.MANDATORY_PROPERTY(cause.getPropertyName());
+            } else if (e.getCause() instanceof ConstraintViolationException) {
+                // Parse the error to a client readable one
+                Throwable cause = e.getCause().getCause();
+                String details = cause.getMessage();
+                Pattern pattern = Pattern.compile("\\((.*)\\)=\\((.*)\\)");
+                Matcher matcher = pattern.matcher(details);
+                if (matcher.find()) {
+                    String keyName = matcher.group(1);
+                    String keyValue = matcher.group(2);
+                    throw InsertEntityException.DUPLICATE_KEY(keyName, keyValue);
+                } else {
+                    throw InsertEntityException.OTHER(details);
+                }
+            } else {
+                throw e;
+            }
+        }
+        return entity ;
+    }
+
     /**
      *
      * @param entity

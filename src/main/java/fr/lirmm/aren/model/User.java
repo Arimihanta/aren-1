@@ -25,6 +25,8 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import javax.persistence.JoinTable;
+
+import fr.lirmm.aren.model.vm.VMTeam;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
 import org.hibernate.annotations.SortNatural;
@@ -134,6 +136,15 @@ public class User extends AbstractEntEntity implements Serializable {
     @ManyToMany
     @SortNatural
     private SortedSet<Team> teams = new TreeSet<>();
+
+    @JoinTable(name = "vm_teams_users",
+            joinColumns = {
+                    @JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "team_id", referencedColumnName = "id")})
+    @ManyToMany
+    @SortNatural
+    private SortedSet<VMTeam> vmTeams = new TreeSet<>();
 
     @OneToMany(mappedBy = "owner")
     @SortNatural
@@ -370,6 +381,40 @@ public class User extends AbstractEntEntity implements Serializable {
     public void removeTeams(Team team) {
         teams.remove(team);
         team.getUsers().remove(this);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public SortedSet<VMTeam> getVmTeams() {
+        return vmTeams;
+    }
+
+    /**
+     *
+     * @param vmTeams
+     */
+    public void setVmTeams(SortedSet<VMTeam> vmTeams) {
+        this.vmTeams = vmTeams;
+    }
+
+    /**
+     *
+     * @param team
+     */
+    public void addMember(VMTeam team) {
+        vmTeams.add(team);
+        team.getMembers().add(this);
+    }
+
+    /**
+     *
+     * @param team
+     */
+    public void removeMember(VMTeam team) {
+        vmTeams.remove(team);
+        team.getMembers().remove(this);
     }
 
     /**
