@@ -33,7 +33,7 @@ public class VMTeamService extends AbstractService<VMTeam> {
     private TypedQuery<VMTeam> generateQuery(Long teamId){
         TypedQuery<VMTeam> query = getEntityManager().createQuery("SELECT vmt "
                         +"FROM VMTeam vmt "
-                        +"LEFT JOIN FETCH vmt.members m "
+                        +"LEFT JOIN vmt.members m "
                         + (teamId != null
                         ? "WHERE vmt.id = :teamId "
                         : "WHERE vmt.id IS NOT NULL ")

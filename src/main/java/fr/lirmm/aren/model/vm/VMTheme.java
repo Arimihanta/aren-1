@@ -3,6 +3,7 @@ package fr.lirmm.aren.model.vm;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fr.lirmm.aren.model.AbstractEntity;
+import fr.lirmm.aren.model.Team;
 import fr.lirmm.aren.model.User;
 import org.hibernate.annotations.Type;
 
@@ -31,7 +32,7 @@ public class VMTheme extends AbstractEntity implements Serializable {
 
     @JoinColumn(name = "team", referencedColumnName = "id")
     @ManyToOne
-    private VMTeam team;
+    private Team team;
 
     @Size(max = 255)
     @Column(name = "title")
@@ -71,7 +72,7 @@ public class VMTheme extends AbstractEntity implements Serializable {
      *
      * @return
      */
-    public VMTeam getTeam() {
+    public Team getTeam() {
         return team;
     }
 
@@ -79,7 +80,7 @@ public class VMTheme extends AbstractEntity implements Serializable {
      *
      * @param team
      */
-    public void setTeam(VMTeam team) {
+    public void setTeam(Team team) {
         this.team = team;
     }
 
