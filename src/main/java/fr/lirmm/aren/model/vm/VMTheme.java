@@ -29,6 +29,9 @@ public class VMTheme extends AbstractEntity implements Serializable {
     @ManyToOne
     private User author;
 
+    @JoinColumn(name = "team", referencedColumnName = "id")
+    @ManyToOne
+    private VMTeam team;
 
     @Size(max = 255)
     @Column(name = "title")
@@ -62,6 +65,22 @@ public class VMTheme extends AbstractEntity implements Serializable {
      */
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public VMTeam getTeam() {
+        return team;
+    }
+
+    /**
+     *
+     * @param team
+     */
+    public void setTeam(VMTeam team) {
+        this.team = team;
     }
 
     /**
