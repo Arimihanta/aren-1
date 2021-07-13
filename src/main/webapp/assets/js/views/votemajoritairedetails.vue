@@ -225,7 +225,7 @@ module.exports = {
           colors: ["#fff"],
         },
         title: {
-          text: `Résultat du vote : ${this.currentTheme.title ?? ""} `,
+          text: `Résultat du vote : `,
         },
         xaxis: {
           categories: false,
