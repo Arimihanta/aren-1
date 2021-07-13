@@ -47,6 +47,8 @@
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
     <script src="assets/js/vendors/axios.js"></script>
     <script src="assets/js/vendors/sweetalert.min.js"></script>
+    
+    <script src="assets/js/vendors/apexcharts.js"></script>
     <script src="assets/js/vendors/vue-apexcharts.js"></script>
 
     <% } else { %>
@@ -68,7 +70,8 @@
 
     <script src="assets/js/vendors/v-calendar.umd.js"></script>
     <script src="assets/js/vendors/axios.js"></script>
-    <script src="assets/js/vendors/sweetalert.min.js"></script>
+    <script src="assets/js/vendors/sweetalert.min.js"></script>    
+    <script src="assets/js/vendors/apexcharts.js"></script>
     <script src="assets/js/vendors/vue-apexcharts.js"></script>
     <% }%>
 </head>
@@ -105,8 +108,8 @@
                     <li v-if="user.is('ADMIN')">
                         <router-link to="/sondages" v-bind:class="{ active: $route.path === '/sondages' || $route.path === '/sondage' }">Sondages</router-link>
                     </li>
-                    <li>
-                        <router-link to="/votemajoritaire" v-bind:class="{ active: $route.path === '/votemajoritaire' }">Votes majoritaires</router-link>
+                    <li v-if="user.is('USER')">
+                        <router-link to="/votemajoritaire" v-bind:class="{ active: $route.path === '/votemajoritaire' || $route.path === '/createVoteMajoritaire' || $route.path === '/votemajoritairedetails'}">Votes majoritaires</router-link>
                     </li>
                 </ul>
 
@@ -235,6 +238,7 @@
         const blueColor = styles.getPropertyValue('--blue-color');
         const greenColor = styles.getPropertyValue('--green-color');
         const greyColor = styles.getPropertyValue('--grey-color');
+        const ApiBaseUri = `${document.baseURI}ws`;
 
         new Vue({
             el: "#app",

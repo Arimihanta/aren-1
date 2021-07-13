@@ -54,12 +54,7 @@
         </p>
         <button
           class="exit-btn"
-          @click="
-            () => {
-              isNotInserted = false;
-            }
-          "
-        >
+          @click="() => {isNotInserted = false;}">
           fermer
         </button>
       </div>

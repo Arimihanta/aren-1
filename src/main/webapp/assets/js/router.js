@@ -19,6 +19,8 @@ const router = new VueRouter({
         {path: '/sondages', component: vueLoader('views/sondages')},
         {path: '/sondage', component: vueLoader('views/sondage')},
         {path: '/votemajoritaire', component: vueLoader('views/votemajoritaire')},
+        {path: '/createVoteMajoritaire', component: vueLoader('views/createVoteMajoritaire')},
+        {path: '/votemajoritairedetails', component: vueLoader('views/votemajoritairedetails')},
         {path: '*', component: vueLoader('views/404')},
     ]
 });
