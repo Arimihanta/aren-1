@@ -27,11 +27,11 @@ public class VMVote extends AbstractEntity implements Serializable {
         EXCELLENT
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "subThemeId")
     private VMChoice subThemeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "authorId")
     private User authorId ;
 
