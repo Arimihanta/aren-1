@@ -79,16 +79,4 @@ public class VMTeamService extends AbstractService<VMTeam> {
         }
         return teams.get(0);
     }
-
-    public void updateExternaleTables(VMTeam team) {
-        super.transactionBegin();
-        team.getMembers().forEach(member->{
-            System.out.println(team.getId()+" --- "+member.getId());
-            getEntityManager().createNativeQuery("INSERT INTO vm_teams_users(vmteam_id,members_id) VALUES(?,?) ")
-                    .setParameter(1, team.getId())
-                    .setParameter(2, member.getId())
-                    .executeUpdate();
-            super.commit();
-        });
-    }
 }

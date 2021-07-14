@@ -119,16 +119,20 @@ public class VMThemeRESTFacade extends AbstractRESTFacade<VMTheme>{
 
             int index=0 ;
             for(ProposalResultInterface item : result.getProposalResults()){
-                newChoices[item.getRank()-1]=(VMChoice) choices[index] ;
+                VMChoice vmChoice=(VMChoice) choices[index] ;
+                vmChoice.setRank(item.getRank());
+                newChoices[item.getRank()-1]=vmChoice ;
                 System.out.println(item.getRank()+" - "+newChoices[item.getRank()-1].getTitle());
                 index++ ;
             }
         }
 
         for(int i=0 ; i<choicesNotVoted.size() ; i++){
-            newChoices[newChoices.length-(i+1)]= choicesNotVoted.get(i) ;
+            VMChoice vmChoice=choicesNotVoted.get(i) ;
+            vmChoice.setRank(newChoices.length-i);
+            newChoices[newChoices.length-(i+1)]= vmChoice ;
         }
-        LinkedHashSet<VMChoice> setChoices = new LinkedHashSet<>();
+        HashSet<VMChoice> setChoices = new HashSet<>();
         System.out.println("Rang : ") ;
         for(int i=0 ; i<newChoices.length ; i++){
             System.out.println(i+" - "+newChoices[i].getTitle());

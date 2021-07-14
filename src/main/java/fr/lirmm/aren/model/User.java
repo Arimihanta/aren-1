@@ -137,15 +137,6 @@ public class User extends AbstractEntEntity implements Serializable {
     @SortNatural
     private SortedSet<Team> teams = new TreeSet<>();
 
-    @JoinTable(name = "vm_teams_users",
-            joinColumns = {
-                    @JoinColumn(name = "user_id", referencedColumnName = "id")},
-            inverseJoinColumns = {
-                    @JoinColumn(name = "team_id", referencedColumnName = "id")})
-    @ManyToMany
-    @SortNatural
-    private SortedSet<VMTeam> vmTeams = new TreeSet<>();
-
     @OneToMany(mappedBy = "owner")
     @SortNatural
     private SortedSet<Notification> notifications = new TreeSet<>();
@@ -381,40 +372,6 @@ public class User extends AbstractEntEntity implements Serializable {
     public void removeTeams(Team team) {
         teams.remove(team);
         team.getUsers().remove(this);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public SortedSet<VMTeam> getVmTeams() {
-        return vmTeams;
-    }
-
-    /**
-     *
-     * @param vmTeams
-     */
-    public void setVmTeams(SortedSet<VMTeam> vmTeams) {
-        this.vmTeams = vmTeams;
-    }
-
-    /**
-     *
-     * @param team
-     */
-    public void addMember(VMTeam team) {
-        vmTeams.add(team);
-        team.getMembers().add(this);
-    }
-
-    /**
-     *
-     * @param team
-     */
-    public void removeMember(VMTeam team) {
-        vmTeams.remove(team);
-        team.getMembers().remove(this);
     }
 
     /**
