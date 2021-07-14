@@ -1,6 +1,8 @@
 package fr.lirmm.aren.model.vm;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import fr.lirmm.aren.model.AbstractEntity;
 import org.hibernate.annotations.SortNatural;
@@ -72,6 +74,10 @@ public class VMChoice extends AbstractEntity implements Serializable {
     @OneToMany(mappedBy = "subThemeId",fetch = FetchType.LAZY)
     @SortNatural
     private SortedSet<VMVote> votes = new TreeSet<>();
+
+    @Transient
+    @JsonProperty
+    private int rank ;
 
     /**
      *
@@ -295,6 +301,22 @@ public class VMChoice extends AbstractEntity implements Serializable {
      */
     public void setVotes(SortedSet<VMVote> votes) {
         this.votes = votes;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getRank() {
+        return rank;
+    }
+
+    /**
+     *
+     * @param rank
+     */
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public boolean isVoted(){

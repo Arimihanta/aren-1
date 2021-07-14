@@ -46,12 +46,7 @@ public class VMTeamRESTFacade extends AbstractRESTFacade<VMTeam>{
     @Override
     @PermitAll
     public VMTeam create(VMTeam team){
-        SortedSet<User> members=team.getMembers() ;
         VMTeam teamRes= teamService.insert(team) ;
-        members.forEach(member->{
-            teamRes.addUser(userService.getReference(member.getId()));
-            teamService.edit(teamRes);
-        });
         return teamRes ;
     }
 

@@ -10,8 +10,6 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * @author ANDRIAMBOLAHARIMIHANTA Havana on 11/07/2021
@@ -24,10 +22,6 @@ public class VMTeam extends AbstractEntity implements Serializable {
     @Size(max = 255)
     @Column(name = "name")
     private String name;
-
-    @ManyToMany(mappedBy = "vmTeams")
-    @SortNatural
-    private SortedSet<User> members = new TreeSet<>();
 
     /**
      *
@@ -43,39 +37,5 @@ public class VMTeam extends AbstractEntity implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public SortedSet<User> getMembers() {
-        return members;
-    }
-
-    /**
-     *
-     * @param members
-     */
-    public void setMembers(SortedSet<User> members) {
-        this.members = members;
-    }
-
-    /**
-     *
-     * @param user
-     */
-    public void addUser(User user) {
-        this.members.add(user);
-        user.getVmTeams().add(this);
-    }
-
-    /**
-     *
-     * @param user
-     */
-    public void removeUser(User user) {
-        this.members.remove(user);
-        user.getVmTeams().remove(this);
     }
 }

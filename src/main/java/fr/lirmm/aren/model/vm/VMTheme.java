@@ -11,6 +11,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public class VMTheme extends AbstractEntity implements Serializable {
     private ZonedDateTime expiracyDate;
 
     @OneToMany(mappedBy = "themeId")
-    private Set<VMChoice> choices = new LinkedHashSet<>();
+    private Set<VMChoice> choices = new HashSet<>();
 
     /**
      *
