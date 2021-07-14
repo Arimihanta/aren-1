@@ -63,56 +63,8 @@ public class VMThemeRESTFacade extends AbstractRESTFacade<VMTheme>{
 
 
         themes.forEach(theme -> {
-            Object []choices=theme.getChoices().toArray() ;
-            List<VMChoice> choicesNotVoted=new ArrayList<>() ;
-            List<ProposalTallyInterface> proposalTallyInterfaces=new ArrayList<>() ;
-            for(int i=0 ; i<choices.length ; i++){
-                VMChoice choice=(VMChoice) choices[i] ;
-                if(choice.isVoted()){
-                    proposalTallyInterfaces.add(new ProposalTally(
-                            new Integer[]{choice.getRejected(),
-                                    choice.getInsufficient(),
-                                    choice.getPass(),
-                                    choice.getAcceptable(),
-                                    choice.getGood(),
-                                    choice.getVeryGood(),
-                                    choice.getExcellent()})) ;
-                }else{
-                    choicesNotVoted.add(choice) ;
-                }
-            }
-            VMChoice newChoices[]=new VMChoice[choices.length] ;
-            if(!proposalTallyInterfaces.isEmpty()){
-                ProposalTallyInterface []proposalTallyInterfacesArray=new ProposalTallyInterface[proposalTallyInterfaces.size()] ;
-                for(int i=0 ; i<proposalTallyInterfaces.size() ; i++){
-                    proposalTallyInterfacesArray[i]=proposalTallyInterfaces.get(i) ;
-                }
-                TallyInterface tally = new NormalizedTally(proposalTallyInterfacesArray) ;
-                DeliberatorInterface mj = new MajorityJudgmentDeliberator();
-                ResultInterface result = mj.deliberate(tally);
-
-
-                int index=0 ;
-                for(ProposalResultInterface item : result.getProposalResults()){
-                    newChoices[item.getRank()-1]=(VMChoice) choices[index] ;
-                    System.out.println(item.getRank()+" - "+newChoices[item.getRank()-1].getTitle());
-                    index++ ;
-                }
-            }
-
-            for(int i=0 ; i<choicesNotVoted.size() ; i++){
-                newChoices[newChoices.length-(i+1)]= choicesNotVoted.get(i) ;
-            }
-            LinkedHashSet<VMChoice> setChoices = new LinkedHashSet<>();
-            System.out.println("Rang : ") ;
-            for(int i=0 ; i<newChoices.length ; i++){
-                System.out.println(i+" - "+newChoices[i].getTitle());
-                setChoices.add(newChoices[i]) ;
-            }
-
-            theme.setChoices(setChoices);
+            this.orderChoices(theme);
             newThemes.add(theme) ;
-
         });
 
         return newThemes ;
@@ -131,6 +83,58 @@ public class VMThemeRESTFacade extends AbstractRESTFacade<VMTheme>{
     public VMTheme find(Long id) {
         boolean withChoices = this.overview == null;
         VMTheme theme = themeService.find(id,withChoices,true);
+        this.orderChoices(theme);
         return theme;
+    }
+
+    private void orderChoices(VMTheme theme){
+        Object []choices=theme.getChoices().toArray() ;
+        List<VMChoice> choicesNotVoted=new ArrayList<>() ;
+        List<ProposalTallyInterface> proposalTallyInterfaces=new ArrayList<>() ;
+        for(int i=0 ; i<choices.length ; i++){
+            VMChoice choice=(VMChoice) choices[i] ;
+            if(choice.isVoted()){
+                proposalTallyInterfaces.add(new ProposalTally(
+                        new Integer[]{choice.getRejected(),
+                                choice.getInsufficient(),
+                                choice.getPass(),
+                                choice.getAcceptable(),
+                                choice.getGood(),
+                                choice.getVeryGood(),
+                                choice.getExcellent()})) ;
+            }else{
+                choicesNotVoted.add(choice) ;
+            }
+        }
+        VMChoice newChoices[]=new VMChoice[choices.length] ;
+        if(!proposalTallyInterfaces.isEmpty()){
+            ProposalTallyInterface []proposalTallyInterfacesArray=new ProposalTallyInterface[proposalTallyInterfaces.size()] ;
+            for(int i=0 ; i<proposalTallyInterfaces.size() ; i++){
+                proposalTallyInterfacesArray[i]=proposalTallyInterfaces.get(i) ;
+            }
+            TallyInterface tally = new NormalizedTally(proposalTallyInterfacesArray) ;
+            DeliberatorInterface mj = new MajorityJudgmentDeliberator();
+            ResultInterface result = mj.deliberate(tally);
+
+
+            int index=0 ;
+            for(ProposalResultInterface item : result.getProposalResults()){
+                newChoices[item.getRank()-1]=(VMChoice) choices[index] ;
+                System.out.println(item.getRank()+" - "+newChoices[item.getRank()-1].getTitle());
+                index++ ;
+            }
+        }
+
+        for(int i=0 ; i<choicesNotVoted.size() ; i++){
+            newChoices[newChoices.length-(i+1)]= choicesNotVoted.get(i) ;
+        }
+        LinkedHashSet<VMChoice> setChoices = new LinkedHashSet<>();
+        System.out.println("Rang : ") ;
+        for(int i=0 ; i<newChoices.length ; i++){
+            System.out.println(i+" - "+newChoices[i].getTitle());
+            setChoices.add(newChoices[i]) ;
+        }
+
+        theme.setChoices(setChoices);
     }
 }
