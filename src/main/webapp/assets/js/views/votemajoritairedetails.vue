@@ -199,7 +199,7 @@ module.exports = {
     return {
       currentTheme: false,
       choicesValue: false,
-      showVote: true, //Change this when check alredy make vote is avalaible in ws
+      showVote: false,
       series: [],
       chartOptions: {
         colors: [
@@ -317,9 +317,6 @@ module.exports = {
           (e) => e.title
         );
 
-        /**
-         * Uncomment this when check alredy make vote is avalaible in ws
-         *
         for (const choice of theme.data.choices) {
           for (const vote of choice.votes) {
             const authId = vote.authorId;
@@ -340,7 +337,6 @@ module.exports = {
           }
           this.showVote = true;
         }
-        */
       } catch (error) {
         alert(
           "ERREUR INTERNE\n\nToutes nos excuses, une erreur s'est produite sur nos serveurs.\nVeuillez réessayer ou contacter un administrateur si l'erreur persiste."
