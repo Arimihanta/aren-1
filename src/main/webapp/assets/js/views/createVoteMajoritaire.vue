@@ -114,7 +114,7 @@
               />
             </button>
             <button @click="saveVoteMajoritaire()" class="create-vote-btn">
-              <span>Créer la vote majoritaire</span>
+              <span>Créer le vote majoritaire</span>
             </button>
           </div>
         </div>
@@ -202,13 +202,6 @@ module.exports = {
       choices: [
         {
           choice_title_label: "Choix numéro 1",
-          choice_title: "",
-          choice_description: "",
-          choice_image: "",
-          choice_url: "",
-        },
-        {
-          choice_title_label: "Choix numéro 2",
           choice_title: "",
           choice_description: "",
           choice_image: "",

@@ -33,7 +33,9 @@
           </thead>
           <tbody>
             <tr v-for="(choice, k) in currentTheme.choices" :key="k">
-              <td>{{ choice.title }}</td>
+              <td>
+                <span class="choice" @click="OpenDetail(choice)">{{ choice.title }}</span>
+              </td>
               <td class="chek-cell-container">
                 <input
                   type="checkbox"
@@ -97,7 +99,7 @@
           <span>Valider mon choix</span>
         </button>
       </div>
-      <div class="space-top">
+      <div v-if="!showVote" class="space-top">
         <h1 class="vm-header-title">Résultat</h1>
         <div v-if="typeof currentTheme === `object`" id="chart">
           <apexchart
@@ -108,11 +110,17 @@
           ></apexchart>
         </div>
       </div>
+      <template v-slot:addons>
+        <choice-detail-modal ref="ChoiceDetailsModal"> </choice-detail-modal>
+      </template>
     </base-layout>
   </div>
 </template>
 
 <style lang="css" scoped>
+.choice {
+  cursor: pointer;
+}
 .box-container {
   border: 1px solid #a1a3a1;
   border-radius: 10px;
@@ -363,9 +371,14 @@ module.exports = {
         console.error(error);
       }
     },
+    OpenDetail(choice = {}) {
+      this.$refs.ChoiceDetailsModal.choice = choice;
+      this.$refs.ChoiceDetailsModal.open();
+    },
   },
   components: {
     apexchart: VueApexCharts,
+    "choice-detail-modal": vueLoader("components/modals/ChoiceDetailsModal"),
   },
 };
 </script>
