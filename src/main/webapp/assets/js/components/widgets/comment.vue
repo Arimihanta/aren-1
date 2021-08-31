@@ -38,11 +38,9 @@
           </button>
 
           <button
-            v-if="
-              clipboard && ($root.user.is('ADMIN') || $root.user.is('MODO'))
-            "
+            v-if="clipboard && ($root.user.is('ADMIN') || $root.user.is('MODO'))"
             title="Exporter vers l'Influent"
-            @click="shareComment()"
+            @click="shareComment(`/debates/${comment.debate.id}?comment=${comment.id}`)"
           >
             <img class="copy-img" alt="edit" src="assets/img/share.png" />
           </button>
@@ -267,13 +265,20 @@ module.exports = {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     },
-    copyToClipBoard(text) {
+    copyToClipBoard(text, f=null) {
       navigator.clipboard.writeText(`${baseUrl}${text}`).then(
         function () {
-          alert("lien copié dans le presse-papier");
+          if(f){
+            if (window.confirm('Lien copié dans le presse-papier \n Aller vers l\'influent?'))
+            {
+                f();
+            }
+          } else {
+            alert("lien copié dans le presse-papier");
+          }
         },
-        function () {
-          console.error("Erreur du copie de lien");
+        function (e) {
+          console.error("Erreur du copie de lien------"+e);
         }
       );
     },
@@ -302,9 +307,15 @@ module.exports = {
         console.log(error);
       }
     },
-    shareComment() {
+    shareComment(text) {
       try {
-        alert("share comment functionnality");
+        const openInfluentInNewTab = () => {
+          // setTimeout(function(){
+            
+          // },1500)
+          window.open(`https://app.linfluent.com/#/Editeur`, '_blank').focus();
+        }
+        this.copyToClipBoard(text, openInfluentInNewTab)
       } catch (error) {
         alert(error);
       }
