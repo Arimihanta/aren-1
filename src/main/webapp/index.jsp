@@ -111,8 +111,16 @@
                     <li v-if="user.is('USER')">
                         <router-link to="/votemajoritaire" v-bind:class="{ active: $route.path === '/votemajoritaire' || $route.path === '/createVoteMajoritaire' || $route.path === '/votemajoritairedetails'}">Votes majoritaires</router-link>
                     </li>
+                    <li>
+                        <router-link to="/creation-debats-sur-cartes" v-bind:class="{ active: $route.path === '/creation-debats-sur-cartes' }">Ouvrir un débat sur carte</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/documents-debats-sur-cartes" v-bind:class="{ active: $route.path === '/documents-debats-sur-cartes' }">Mes documents de débat sur carte</router-link>
+                    </li>
+                    <li>
+                        <router-link to="/debats-sur-cartes" v-bind:class="{ active: $route.path === '/debats-sur-cartes' }">Mes débats sur carte</router-link>
+                    </li>
                 </ul>
-
                 <ul class="right">
                     <template v-if="user.is('USER')">
                         <documented v-bind:value="$t('documentation.notification_panel')">
