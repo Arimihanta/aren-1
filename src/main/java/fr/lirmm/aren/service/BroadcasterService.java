@@ -12,6 +12,9 @@ import fr.lirmm.aren.model.AbstractEntity;
 import fr.lirmm.aren.model.Comment;
 import fr.lirmm.aren.model.Debate;
 import fr.lirmm.aren.model.Notification;
+import fr.lirmm.aren.model.carto.CComment;
+import fr.lirmm.aren.model.carto.CDebate;
+import fr.lirmm.aren.model.carto.CNotification;
 import fr.lirmm.aren.security.AuthenticatedUserDetails;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.sse.OutboundSseEvent;
@@ -112,6 +115,32 @@ public class BroadcasterService {
     public void broadcastNotification(List<Notification> notifs) {
         notifs.forEach(notif -> {
             broadcastNotification(notif);
+        });
+    }
+
+    /**
+     *
+     * @param comment
+     */
+    public void broadcastCommentCarto(CComment comment) {
+        broadcast(comment.getDebate().getId(), comment, CDebate.class);
+    }
+
+    /**
+     *
+     * @param notif
+     */
+    public void broadcastNotificationCarto(CNotification notif) {
+        broadcast(notif.getOwner().getId(), notif, CNotification.class);
+    }
+
+    /**
+     *
+     * @param notifs
+     */
+    public void broadcastNotificationCarto(List<CNotification> notifs) {
+        notifs.forEach(notif -> {
+            broadcastNotificationCarto(notif);
         });
     }
 }
