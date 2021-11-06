@@ -23,8 +23,6 @@ public class JerseyConfig extends ResourceConfig {
 
         packages("fr.lirmm.aren.ws.rest");
 
-        packages("fr.lirmm.aren.ws.rest.carto");
-
         packages("fr.lirmm.aren.ws.filter");
 
         packages("fr.lirmm.aren.ws.exceptionmapper");

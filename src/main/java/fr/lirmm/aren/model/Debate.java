@@ -99,6 +99,9 @@ public class Debate extends AbstractOwnedEntity implements Serializable {
     @Column(name = "open_public")
     private boolean openPublic = false;
 
+    @Column(name = "is_carto")
+    private boolean carto = false;
+
     /**
      *
      * @return
@@ -344,6 +347,22 @@ public class Debate extends AbstractOwnedEntity implements Serializable {
      */
     public void setOpenPublic(boolean openPublic) {
         this.openPublic = openPublic;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isCarto() {
+        return carto;
+    }
+
+    /**
+     *
+     * @param carto
+     */
+    public void setCarto(boolean carto) {
+        this.carto = carto;
     }
 
     /**
