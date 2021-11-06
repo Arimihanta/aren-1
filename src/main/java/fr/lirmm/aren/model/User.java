@@ -26,7 +26,6 @@ import java.time.temporal.ChronoUnit;
 
 import javax.persistence.JoinTable;
 
-import fr.lirmm.aren.model.carto.CDebate;
 import fr.lirmm.aren.model.vm.VMTeam;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.Filters;
@@ -116,10 +115,6 @@ public class User extends AbstractEntEntity implements Serializable {
     @ManyToMany(mappedBy = "guests")
     @SortNatural
     private SortedSet<Debate> invitedDebates = new TreeSet<>();
-
-    @ManyToMany(mappedBy = "guests")
-    @SortNatural
-    private SortedSet<CDebate> invitedDebatesCarto = new TreeSet<>();
 
     @OneToMany(mappedBy = "owner")
     @SortNatural
@@ -295,13 +290,6 @@ public class User extends AbstractEntEntity implements Serializable {
         this.invitedDebates = invitedDebates;
     }
 
-    public SortedSet<CDebate> getInvitedDebatesCarto() {
-        return invitedDebatesCarto;
-    }
-
-    public void setInvitedDebatesCarto(SortedSet<CDebate> invitedDebatesCarto) {
-        this.invitedDebatesCarto = invitedDebatesCarto;
-    }
 
     /**
      *

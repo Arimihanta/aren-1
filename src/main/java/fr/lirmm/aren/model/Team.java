@@ -16,7 +16,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import fr.lirmm.aren.model.carto.CDebate;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Where;
 
@@ -49,10 +48,6 @@ public class Team extends AbstractEntEntity implements Serializable {
     @ManyToMany(mappedBy = "teams")
     @SortNatural
     private SortedSet<Debate> debates = new TreeSet<>();
-
-    @ManyToMany(mappedBy = "teams")
-    @SortNatural
-    private SortedSet<CDebate> debatesCarto = new TreeSet<>();
 
     @ManyToMany(mappedBy = "teams")
     @Where(clause = "is_active = true")
@@ -134,23 +129,6 @@ public class Team extends AbstractEntEntity implements Serializable {
      */
     public void setDebates(SortedSet<Debate> debates) {
         this.debates = debates;
-    }
-
-    /**
-     *
-     * @return
-     */
-    @XmlTransient
-    public SortedSet<CDebate> getDebatesCarto() {
-        return debatesCarto;
-    }
-
-    /**
-     *
-     * @param debatesCarto
-     */
-    public void setDebatesCarto(SortedSet<CDebate> debatesCarto) {
-        this.debatesCarto = debatesCarto;
     }
 
     /**
