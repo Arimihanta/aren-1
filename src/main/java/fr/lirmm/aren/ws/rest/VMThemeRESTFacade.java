@@ -1,7 +1,12 @@
 package fr.lirmm.aren.ws.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.lirmm.aren.model.Team;
 import fr.lirmm.aren.model.vm.VMChoice;
+import fr.lirmm.aren.model.vm.VMNotification;
+import fr.lirmm.aren.model.vm.VMTeam;
 import fr.lirmm.aren.model.vm.VMTheme;
+import fr.lirmm.aren.service.TeamService;
 import fr.lirmm.aren.service.vm.VMChoiceService;
 import fr.lirmm.aren.service.vm.VMThemeService;
 import fr.lirmm.aren.service.vm.VMVoteService;
@@ -14,6 +19,9 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.io.File;
+import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 /**
@@ -32,6 +40,9 @@ public class VMThemeRESTFacade extends AbstractRESTFacade<VMTheme>{
     @Inject
     VMVoteService voteService ;
 
+    @Inject
+    TeamService teamService ;
+
     @Override
     protected VMThemeService getService() {
         return themeService;
@@ -41,8 +52,40 @@ public class VMThemeRESTFacade extends AbstractRESTFacade<VMTheme>{
     //@RolesAllowed({"ADMIN"})
     @PermitAll
     public VMTheme create(VMTheme theme){
-        System.out.println(theme.toString());
-        return super.create(theme);
+        VMTheme res= super.create(theme);
+        try{
+            File file = new File("/aren/tmp/vote_majoritaire.json");
+            File directory = new File("/aren/tmp");
+            if (! directory.exists()){
+                directory.mkdirs() ;
+            }
+            System.out.println(file.getAbsolutePath());
+            if(!file.exists())
+                file.createNewFile() ;
+            VMNotification notification=new VMNotification() ;
+            List<String> emails=new ArrayList<>() ;
+            Team team=teamService.find(theme.getTeam().getId());
+            team.getUsers().forEach(user->{
+                emails.add(user.getEmail()) ;
+            });
+            notification.setExpiracy(theme.getExpiracyDate().toString());
+            String serverRoot = request.getRequestURL().substring(0, request.getRequestURL().length() - "/ws/vm/themes".length());
+            notification.setLink(serverRoot+"/votemajoritairedetails?id="+res.getId());
+            notification.setEmails(emails);
+            String []emails_array=new String[notification.getEmails().size()] ;
+            for(int j=0 ; j<emails_array.length ; j++){
+                emails_array[j]=notification.getEmails().get(j) ;
+            }
+            Map<String, Object> map = new HashMap<>() ;
+            map.put("link",notification.getLink()) ;
+            map.put("expiracy",notification.getExpiracy()) ;
+            map.put("emails",emails_array) ;
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(file,map);
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        return res ;
     }
 
     @Override

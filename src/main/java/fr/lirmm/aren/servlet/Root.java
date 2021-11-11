@@ -43,6 +43,7 @@ public class Root implements Filter {
         String path = request.getRequestURI().substring(request.getContextPath().length());
         if (!path.startsWith("/caslogin") && !path.startsWith("/ws/") && !path.startsWith("/assets/")) {
             request.getRequestDispatcher("/index.jsp").forward(request, response);
+
         } else {
             chain.doFilter(request, response);
         }

@@ -290,6 +290,7 @@ public class User extends AbstractEntEntity implements Serializable {
         this.invitedDebates = invitedDebates;
     }
 
+
     /**
      *
      * @return

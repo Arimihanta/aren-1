@@ -6,6 +6,8 @@
 package fr.lirmm.aren.servlet;
 
 import fr.lirmm.aren.service.CommentService;
+import fr.lirmm.aren.service.vm.VMSendNotificationService;
+
 import java.util.Calendar;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -42,6 +44,9 @@ public class BackgroundJobManager implements ServletContextListener {
         this.scheduler.scheduleAtFixedRate(() -> {
             this.commentService.updateAllTags();
         }, untilMidnight, millisInDay, TimeUnit.MILLISECONDS);
+
+        VMSendNotificationService sendNotificationService=new VMSendNotificationService() ;
+        sendNotificationService.start();
     }
 
     @Override

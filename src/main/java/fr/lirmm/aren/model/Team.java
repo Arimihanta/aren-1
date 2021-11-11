@@ -59,6 +59,10 @@ public class Team extends AbstractEntEntity implements Serializable {
     private Integer debatesCount = 0;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Column(name = "debates_carto_count")
+    private Integer debatesCartoCount = 0;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "users_count")
     private Integer usersCount = 0;
 
