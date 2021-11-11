@@ -59,6 +59,21 @@ public class Document extends AbstractDatedEntity implements Serializable {
     @Column(name = "debates_count")
     private Integer debatesCount = 0;
 
+    @Column(name = "is_carto")
+    private boolean carto = false;
+
+    @Column(name = "mesh_line")
+    private int meshLine = 1;
+
+    @Column(name = "mesh_column")
+    private int meshColumn = 1;
+
+    @Lob
+    @Type(type = "org.hibernate.type.TextType")
+    @Column(name = "map_link")
+    private String mapLink;
+
+
     /**
      *
      * @return
@@ -163,6 +178,54 @@ public class Document extends AbstractDatedEntity implements Serializable {
     @Override
     public boolean isEditable() {
         return debates.isEmpty();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isCarto() {
+        return carto;
+    }
+
+    /**
+     *
+     * @param carto
+     */
+    public void setCarto(boolean carto) {
+        this.carto = carto;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getMeshLine() {
+        return meshLine;
+    }
+
+    /**
+     *
+     * @param meshLine
+     */
+    public void setMeshLine(int meshLine) {
+        this.meshLine = meshLine;
+    }
+
+    public int getMeshColumn() {
+        return meshColumn;
+    }
+
+    public void setMeshColumn(int meshColumn) {
+        this.meshColumn = meshColumn;
+    }
+
+    public String getMapLink() {
+        return mapLink;
+    }
+
+    public void setMapLink(String mapLink) {
+        this.mapLink = mapLink;
     }
 
     /**

@@ -58,36 +58,36 @@ public class DebateService extends AbstractService<Debate> {
         boolean isUser = user != null && user.is(Authority.USER) && !user.is(Authority.ADMIN);
         boolean onlyPublic = user != null && user.getAuthority().equals(Authority.GUEST);
         TypedQuery<Debate> query = getEntityManager().createQuery("SELECT d "
-                + "FROM Debate d "
-                + (withComments
+                        + "FROM Debate d "
+                        + (withComments
                         ? "LEFT JOIN FETCH d.comments c "
                         : "")
-                + (withTeams || withUsers || isUser
+                        + (withTeams || withUsers || isUser
                         ? "LEFT JOIN " + (withTeams || withUsers ? "FETCH" : "") + " d.teams t "
                         : "")
-                + (withUsers || isUser
+                        + (withUsers || isUser
                         ? "LEFT JOIN " + (withUsers ? "FETCH" : "") + " t.users u "
                         : "")
-                + (withGuests || isUser
+                        + (withGuests || isUser
                         ? "LEFT JOIN " + (withGuests ? "FETCH" : "") + " d.guests g "
                         : "")
-                + (withDocument
+                        + (withDocument
                         ? "LEFT JOIN FETCH d.document do "
                         : "")
-                + (debateId != null
+                        + (debateId != null
                         ? "WHERE d.id = :debateId "
                         : "WHERE d.id IS NOT NULL ")
-                + (categoryId != null
+                        + (categoryId != null
                         ? "AND d.document.category.id = :categoryId "
                         : "")
-                + (isUser
+                        + (isUser
                         ? "AND (d.openPublic IS TRUE "
                         + "OR :user = d.owner "
                         + "OR :user IN g "
                         + "OR :user IN u) "
                         : (onlyPublic
-                                ? "AND d.openPublic IS TRUE "
-                                : "")),
+                        ? "AND d.openPublic IS TRUE "
+                        : "")),
                 Debate.class
         );
 
@@ -120,6 +120,26 @@ public class DebateService extends AbstractService<Debate> {
             throw new NotFoundException();
         }
         return results.get(0);
+    }
+
+    public void remove(Long debateId){
+        super.transactionBegin();
+        try{
+            getEntityManager().createNativeQuery("DELETE FROM debates_teams WHERE debate_id=:debateId")
+                    .setParameter("debateId",debateId)
+                    .executeUpdate() ;
+            getEntityManager().createNativeQuery("DELETE FROM debates_guests WHERE debate_id=:debateId")
+                    .setParameter("debateId",debateId)
+                    .executeUpdate() ;
+            getEntityManager().createNativeQuery("DELETE FROM notifications WHERE debate_id = :debateId")
+                    .setParameter("debateId", debateId)
+                    .executeUpdate();
+            super.commit();
+            Debate debate=super.find(debateId) ;
+            super.remove(debate);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -172,15 +192,15 @@ public class DebateService extends AbstractService<Debate> {
     public void clearComments(Long debateId) {
         this.transactionBegin();
         getEntityManager().createQuery("DELETE FROM Comment c "
-                + "WHERE c.debate.id = :debateId")
+                        + "WHERE c.debate.id = :debateId")
                 .setParameter("debateId", debateId)
                 .executeUpdate();
         getEntityManager().createQuery("UPDATE Debate d SET "
-                + "d.commentsCount = 0, "
-                + "d.commentsCountFor = 0, "
-                + "d.commentsCountAgainst = 0, "
-                + "d.lastCommentDate = null "
-                + "WHERE d.id = :debateId")
+                        + "d.commentsCount = 0, "
+                        + "d.commentsCountFor = 0, "
+                        + "d.commentsCountAgainst = 0, "
+                        + "d.lastCommentDate = null "
+                        + "WHERE d.id = :debateId")
                 .setParameter("debateId", debateId)
                 .executeUpdate();
         this.commit();
@@ -193,18 +213,18 @@ public class DebateService extends AbstractService<Debate> {
     public void updateExternaleTables(Debate debate) {
         super.transactionBegin();
         getEntityManager().createQuery("UPDATE Category c SET "
-                + "c.debatesCount = (SELECT COUNT(d) FROM c.documents doc LEFT JOIN doc.debates d) "
-                + "WHERE c.id = :id")
+                        + "c.debatesCount = (SELECT COUNT(d) FROM c.documents doc LEFT JOIN doc.debates d) "
+                        + "WHERE c.id = :id")
                 .setParameter("id", debate.getDocument().getCategory().getId())
                 .executeUpdate();
         getEntityManager().createQuery("UPDATE Document doc SET "
-                + "doc.debatesCount = (SELECT COUNT(d) FROM doc.debates d) "
-                + "WHERE doc.id = :id")
+                        + "doc.debatesCount = (SELECT COUNT(d) FROM doc.debates d) "
+                        + "WHERE doc.id = :id")
                 .setParameter("id", debate.getDocument().getId())
                 .executeUpdate();
         getEntityManager().createQuery("UPDATE Team t SET "
-                + "t.debatesCount = (SELECT COUNT(d) from t.debates d) "
-                + "WHERE t IN (SELECT t1 FROM Debate d LEFT JOIN d.teams t1 WHERE d.id = :id)")
+                        + "t.debatesCount = (SELECT COUNT(d) from t.debates d) "
+                        + "WHERE t IN (SELECT t1 FROM Debate d LEFT JOIN d.teams t1 WHERE d.id = :id)")
                 .setParameter("id", debate.getId())
                 .executeUpdate();
         super.commit();

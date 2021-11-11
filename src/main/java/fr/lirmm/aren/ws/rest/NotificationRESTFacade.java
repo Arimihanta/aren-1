@@ -83,5 +83,4 @@ public class NotificationRESTFacade extends AbstractRESTFacade<Notification> {
         }
         return entityToUpdate;
     }
-
 }

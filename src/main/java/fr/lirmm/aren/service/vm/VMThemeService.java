@@ -7,6 +7,8 @@ import fr.lirmm.aren.service.AbstractService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +37,10 @@ public class VMThemeService extends AbstractService<VMTheme> {
         }
         return query ;
     }
+
     public Set<VMTheme> findAll(boolean withChoices, boolean withVotes) {
-        return new HashSet<VMTheme>(generateQuery(null, withChoices,withVotes).getResultList());
+        List<VMTheme> themes=generateQuery(null, withChoices,withVotes).getResultList() ;
+        return new HashSet<>(themes);
     }
 
     @Override

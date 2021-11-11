@@ -151,9 +151,10 @@ public class DebateRESTFacade extends AbstractRESTFacade<Debate> {
      * @param id
      */
     @Override
-    @RolesAllowed({"MODO"})
+    @RolesAllowed({"ADMIN"})
     public void remove(Long id) {
-        super.remove(id);
+        debateService.clearComments(id);
+        debateService.remove(id);
     }
 
     /**
@@ -211,7 +212,6 @@ public class DebateRESTFacade extends AbstractRESTFacade<Debate> {
     @Path("{id}/comments")
     @RolesAllowed({"ADMIN"})
     public void clear(@PathParam("id") Long id) {
-
         debateService.clearComments(id);
     }
 
