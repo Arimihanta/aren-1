@@ -15,6 +15,15 @@ const Authority = {
   },
 };
 
+const DebateType = {
+  BASIC: "BASIC",
+  CARTO: "CARTO",
+  _value: {
+    BASIC: 0,
+    CARTO: 1,
+  }
+}
+
 const Opinion = {
   FOR: "FOR",
   NEUTRAL: "NEUTRAL",
@@ -128,6 +137,7 @@ Category.prototype.debates = function () {
 
 function Document(obj = {}) {
   Entity.call(this, obj);
+  this.type = DebateType.BASIC;
 }
 Document.prototype.attrs = {
   id: Number,
@@ -137,6 +147,10 @@ Document.prototype.attrs = {
   content: String,
   debatesCount: Number,
   lastCommentDate: Date,
+  type: String,
+  meshLine: Number,
+  meshColumn: Number,
+  mapLink: String,
 };
 Document.prototype.oneToMany = {
   debates: [Debate, "document"],
@@ -145,8 +159,13 @@ Document.prototype.manyToOne = {
   category: [Category, "documents"],
 };
 
+Document.prototype.is = function (type) {
+  return DebateType._value[this.type] == DebateType._value[type];
+}
+
 function Debate(obj = {}) {
   Entity.call(this, obj);
+  this.type = DebateType.BASIC;
 }
 Debate.prototype.attrs = {
   id: Number,
@@ -162,6 +181,7 @@ Debate.prototype.attrs = {
   reformulationCheck: Boolean,
   idfixLink: Boolean,
   openPublic: Boolean,
+  type: String,
 };
 Debate.prototype.oneToMany = {
   comments: [Comment, "debate"],
@@ -181,6 +201,9 @@ Debate.prototype.deepSortComments = function (sortFunction) {
     this.comments[i].deepSortComments(sortFunction);
   }
 };
+Debate.prototype.is = function (type) {
+  return DebateType._value[this.type] == DebateType._value[type];
+}
 
 function Comment(obj = {}) {
   Entity.call(this, obj);
