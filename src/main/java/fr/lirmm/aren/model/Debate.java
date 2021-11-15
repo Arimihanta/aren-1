@@ -2,14 +2,7 @@ package fr.lirmm.aren.model;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -18,7 +11,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.time.ZonedDateTime;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import javax.persistence.FetchType;
+
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.annotations.Where;
 
@@ -32,6 +25,10 @@ import org.hibernate.annotations.Where;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Debate.class)
 public class Debate extends AbstractOwnedEntity implements Serializable {
+    public enum Type{
+        BASIC,
+        CARTO
+    }
 
     /**
      *
@@ -99,8 +96,9 @@ public class Debate extends AbstractOwnedEntity implements Serializable {
     @Column(name = "open_public")
     private boolean openPublic = false;
 
-    @Column(name = "is_carto")
-    private boolean carto = false;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Type type=Type.BASIC ;
 
     /**
      *
@@ -353,16 +351,16 @@ public class Debate extends AbstractOwnedEntity implements Serializable {
      *
      * @return
      */
-    public boolean isCarto() {
-        return carto;
+    public Type getType() {
+        return type;
     }
 
     /**
      *
-     * @param carto
+     * @param type
      */
-    public void setCarto(boolean carto) {
-        this.carto = carto;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     /**
