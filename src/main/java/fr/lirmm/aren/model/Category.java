@@ -5,10 +5,7 @@ import java.util.Date;
 import java.util.TreeSet;
 import java.util.SortedSet;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -52,6 +49,10 @@ public class Category extends AbstractEntity implements Serializable {
 
     @Column(name = "last_comment_date")
     private Date lastCommentDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private Debate.Type type= Debate.Type.BASIC ;
 
     /**
      *
@@ -148,6 +149,22 @@ public class Category extends AbstractEntity implements Serializable {
      */
     public void setDocumentsCount(Integer documentsCount) {
         this.documentsCount = documentsCount;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Debate.Type getType() {
+        return type;
+    }
+
+    /**
+     *
+     * @param type
+     */
+    public void setType(Debate.Type type) {
+        this.type = type;
     }
 
     /**
