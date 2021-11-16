@@ -43,6 +43,13 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
         return documentService.findAll(withDebates);
     }
 
+    @Path("{type}")
+    @RolesAllowed({"MODO"})
+    public Set<Document> findAllByType(@PathParam("type") String type) {
+        boolean withDebates = this.overview == null;
+        return documentService.findAllByType(withDebates, type);
+    }
+
     /**
      *
      * @param id
@@ -57,7 +64,7 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
 
     /**
      *
-     * @param id
+     * @param doc
      * @return
      */
     @Override
