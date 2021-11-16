@@ -21,11 +21,11 @@ const router = new VueRouter({
         {path: '/votemajoritaire', component: vueLoader('views/votemajoritaire')},
         {path: '/createVoteMajoritaire', component: vueLoader('views/createVoteMajoritaire')},
         {path: '/votemajoritairedetails', component: vueLoader('views/votemajoritairedetails')},
-        {path: '/carto', component: vueLoader('views/cartoTest')},
         {path: '/creation-debats-sur-cartes', component: vueLoader('views/createDebateSurCarte')},
         {path: '/documents-debats-sur-cartes', component: vueLoader('views/documentsDebatesSurCarte')},
         {path: '/documents-debats-sur-cartes/:id', component: vueLoader('views/documentDebatesSurCarte')},
         {path: '/debats-sur-cartes', component: vueLoader('views/debatesSurCarte')},
+        {path: '/debats-sur-cartes/:id', component: vueLoader('views/debateSurCarte')},
         {path: '*', component: vueLoader('views/404')},
     ]
 });

@@ -65,7 +65,7 @@
     module.exports = {
         data( ) {
             return {
-                categories: ArenService.Store.Category
+                categories: ArenService.Store.Category.filter(cat=>!cat.is('CARTO'))
             };
         },
         created( ) {

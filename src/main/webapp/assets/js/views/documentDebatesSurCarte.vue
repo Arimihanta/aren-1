@@ -26,6 +26,7 @@
 
     <template v-slot:right>
       <span
+        :disabled="document.mapLink.length<=0"
         v-if="editionMode"
         class="waves-effect waves-light btn"
         @click="saveDocument()"
@@ -45,13 +46,12 @@
         class="waves-effect waves-light btn"
         @click="
           fetchData();
-          editionMode = true;
-        "
+          editionMode = true;"
       >
         {{ $t("modify") }}
       </span>
     </template>
-    <div id="cartoDetails">
+    <div id="cartoDetails" v-if="editionMode">
       <div>
         <label for="loadCarto" class="btn">Charger la carte</label>
         <input
@@ -64,21 +64,21 @@
       <div class="cartoInformation-bloc">
         <div class="mailleInfo">
           <label>Nombre de ligne </label>
-          <input type="text" maxlength="2" v-model.number="nbOfLines" />
+          <input type="text" maxlength="2" v-model.number="document.meshLine" />
         </div>
         <div class="mailleInfo">
           <label>Nombre de colonne </label>
-          <input type="text" maxlength="2" v-model.number="nbOfColumns" />
+          <input type="text" maxlength="2" v-model.number="document.meshColumn" />
         </div>
       </div>
     </div>
-
+    
     <div id="mapContainer" v-if="imgUrl">
       <img id="mapImg" :src="imgUrl" alt="map image" />
       <table>
-        <tr v-for="(_, indexOfLine) in nbOfLines" :key="indexOfLine">
+        <tr v-for="(_, indexOfLine) in document.meshLine" :key="indexOfLine">
           <td
-            v-for="(_, indexOfColumn) in nbOfColumns"
+            v-for="(_, indexOfColumn) in document.meshColumn"
             :key="indexOfColumn"
           ></td>
         </tr>
@@ -142,8 +142,8 @@ module.exports = {
       editionMode: false,
       selectedCarto: null,
       imgUrl: null,
-      nbOfLines: 0,
-      nbOfColumns: 0,
+      // nbOfLines: 0,
+      // nbOfColumns: 0,
     };
   },
   created() {
@@ -163,12 +163,16 @@ module.exports = {
           onSuccess: (document) => {
             this.document = document;
             this.copyDocument(this.document, this.unmodifiedDocument);
+            this.imgUrl = document.mapLink;
           },
         });
       } else {
         this.document = new Document();
+        this.document.type = "CARTO";
+        this.document.mapLink="";
         this.document.category = new Category();
         this.document.category.id = this.$route.query.category;
+        this.document.category.type = "CARTO";
         this.editionMode = true;
       }
     },
@@ -181,6 +185,7 @@ module.exports = {
     },
     saveDocument() {
       this.editionMode = false;
+      //this.document.mapLink = this.getBase64Image();
       ArenService.Documents.createOrUpdate({
         data: this.document,
         onSuccess: (document) => {
@@ -199,7 +204,28 @@ module.exports = {
       const file = event.target.files[0];
       this.selectedCarto = file;
       this.imgUrl = URL.createObjectURL(file);
+      this.document.mapLink = this.getBase64Image();
     },
+    getBase64Image() {
+      // Create an empty canvas element
+      let img = document.getElementById("mapImg");
+      var canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+
+      // Copy the image contents to the canvas
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+
+      // Get the data-URL formatted image
+      // Firefox supports PNG and JPEG. You could check img.src to
+      // guess the original format, but be aware the using "image/jpg"
+      // will re-encode the image.
+      var dataURL = canvas.toDataURL("image/png");
+      //let dt = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+      console.log(dataURL);
+      return dataURL;
+  }
   },
   components: {
     "wysiwyg-editor": vueLoader("components/widgets/wysiwygEditor"),

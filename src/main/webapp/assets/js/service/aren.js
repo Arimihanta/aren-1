@@ -120,11 +120,13 @@ function Entity(obj = {}) {
 
 function Category(obj = {}) {
   Entity.call(this, obj);
+  this.type = DebateType.BASIC;
 }
 Category.prototype.attrs = {
   id: Number,
   name: String,
   picture: String,
+  type: String,
   debatesCount: Number,
   lastCommentDate: Date,
 };
@@ -134,10 +136,15 @@ Category.prototype.oneToMany = {
 Category.prototype.debates = function () {
   return this.documents.map((document) => document.debates).flat();
 };
+Category.prototype.is = function (type) {
+  return DebateType._value[this.type] == DebateType._value[type];
+}
 
 function Document(obj = {}) {
   Entity.call(this, obj);
   this.type = DebateType.BASIC;
+  this.meshLine = 1;
+  this.meshColumn = 1;
 }
 Document.prototype.attrs = {
   id: Number,

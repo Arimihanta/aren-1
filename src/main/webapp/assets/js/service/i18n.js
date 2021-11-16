@@ -102,7 +102,7 @@ const messages = {
         guests: "Invité⋅e⋅s",
         debates: "Débats",
         new_debate: "Nouveau débat",
-        new_map_debate: "Nouveau débat sur caarte",
+        new_map_debate: "Nouveau débat sur carte",
         invite_in_debate: "Inviter au débat",
         SUPERADMIN: "Super administrateur⋅rice",
         SUPERADMIN: "Root",

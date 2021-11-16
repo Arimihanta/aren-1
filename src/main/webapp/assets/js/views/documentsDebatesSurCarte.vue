@@ -65,7 +65,7 @@
     module.exports = {
         data( ) {
             return {
-                categories: ArenService.Store.Category
+                categories: ArenService.Store.Category.filter(cat=>cat.is('CARTO'))
             };
         },
         created( ) {
@@ -84,14 +84,17 @@
                     name: document.name + " - copie",
                     author: document.author,
                     content: document.content,
-                    category: {id: document.category.id}
+                    category: {id: document.category.id, type: "CARTO"}
                 });
                 ArenService.Documents.duplicate({
                     id: document.id
                 });
             },
             createOrUpdateCategory(category = {}) {
-                this.$refs.categoryModal.category = new Category(category);
+                let catg = new Category(category);
+                catg.type = "CARTO"
+                this.$refs.categoryModal.category = catg;
+                console.log(this.$refs.categoryModal.category);
                 this.$refs.categoryModal.open((updatedCat) => {
                     if (updatedCat) {
                         ArenService.Categories.createOrUpdate({

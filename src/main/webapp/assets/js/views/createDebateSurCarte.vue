@@ -196,7 +196,7 @@
         data( ) {
             return {
                 debate: new Debate( ),
-                categories: ArenService.Store.Category,
+                categories: ArenService.Store.Category.filter(cat=>cat.is('CARTO')),
                 institution: new Institution( ),
                 search: "",
                 step: 0,
