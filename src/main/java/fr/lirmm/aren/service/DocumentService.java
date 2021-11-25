@@ -82,6 +82,21 @@ public class DocumentService extends AbstractService<Document> {
         return new HashSet<Document>(generateQuery(null, withDebates).getResultList());
     }
 
+    public Set<Document> findAllByType(boolean withDebates, String type){
+        TypedQuery<Document> query = getEntityManager().createQuery("SELECT do "
+                        + "FROM Document do "
+                        + (withDebates
+                        ? "LEFT JOIN FETCH do.debates d "
+                        : "")
+                        + (type.equalsIgnoreCase("CARTO")
+                        ?"WHERE do.type = :type "
+                        :"WHERE do.type = :type OR do.type = NULL "),
+                Document.class)
+                .setParameter("type",type);
+
+        return new HashSet<Document>(query.getResultList());
+    }
+
     /**
      *
      * @param document
