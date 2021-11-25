@@ -262,7 +262,7 @@
                             validateLabel: this.$t('yes'),
                             callback: (returnValue) => {
                                 if (returnValue) {
-                                    this.$router.push('/debates/' + this.debate.id);
+                                    this.$router.push('/debats-sur-cartes/' + this.debate.id);
                                 } else {
                                     this.reinit();
                                 }

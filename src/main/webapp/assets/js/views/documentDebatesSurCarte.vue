@@ -189,8 +189,7 @@ module.exports = {
       ArenService.uploadMap({
         data: this.selectedCarto,
         onSuccess: ({name}) => {
-          //console.log(name);
-          this.document.mapLink = name;
+          this.document.mapLink = "assets/carto/"+name;
           ArenService.Documents.createOrUpdate({
             data: this.document,
             onSuccess: (document) => {

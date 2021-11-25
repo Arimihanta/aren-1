@@ -7,6 +7,9 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Context;
+
+import javax.servlet.ServletContext;
 
 import fr.lirmm.aren.model.aaf.UploadedFile;
 import fr.lirmm.aren.service.DocumentService;
@@ -28,6 +31,9 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
 
     @Inject
     private DocumentService documentService;
+
+    @Context
+    private ServletContext servletContext;
 
     /**
      *
@@ -102,18 +108,22 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
     public Response uploadPdfFile(@FormDataParam("file") InputStream fileInputStream,
                                   @FormDataParam("file") FormDataContentDisposition fileMetaData) throws Exception
     {
-        File UPLOAD_PATH = new File("/tmp/img/");
-        if (! UPLOAD_PATH.exists()){
-            UPLOAD_PATH.mkdir();
+        String realPath = servletContext.getRealPath("");
+        File uploadPath = new File(realPath + "/assets/carto");
+        if (!uploadPath.exists()){
+            uploadPath.mkdir();
         }
         UploadedFile uploadedFile=new UploadedFile() ;
         try
         {
+            String fileName = "carto"+System.currentTimeMillis()+ fileMetaData.getFileName().substring(fileMetaData.getFileName().lastIndexOf("."));
+            String uploadedCartoLocation = realPath + "/assets/carto/" + fileName;
             int read = 0;
             byte[] bytes = new byte[1024];
-            String filename=UPLOAD_PATH +"carto"+System.currentTimeMillis()+ fileMetaData.getFileName().substring(fileMetaData.getFileName().lastIndexOf(".")) ;
-            File file=new File(filename) ;
+
+            File file = new File(uploadedCartoLocation) ;
             OutputStream out = new FileOutputStream(file);
+            
             while ((read = fileInputStream.read(bytes)) != -1)
             {
                 out.write(bytes, 0, read);
@@ -121,7 +131,7 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
             out.flush();
             out.close();
 
-            uploadedFile.setName(file.getAbsolutePath());
+            uploadedFile.setName(file.getName());
         } catch (IOException e)
         {
             throw new WebApplicationException("Error while uploading file. Please try again !!");
