@@ -55,6 +55,10 @@
             </div>
         </template>
 
+        <template v-slot:action.1="{ value: debate }">
+            <router-link v-bind:to="debate.id+'/restitution'" append class="waves-effect waves-light btn">Restitution</router-link>
+        </template>
+
         <template v-slot:action.2="{ value: debate }">
             <router-link v-bind:to="''+debate.id" append class="waves-effect waves-light btn">Aller au débat</router-link>
         </template>

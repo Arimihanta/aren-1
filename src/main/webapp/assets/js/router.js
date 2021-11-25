@@ -26,6 +26,7 @@ const router = new VueRouter({
         {path: '/documents-debats-sur-cartes/:id', component: vueLoader('views/documentDebatesSurCarte')},
         {path: '/debats-sur-cartes', component: vueLoader('views/debatesSurCarte')},
         {path: '/debats-sur-cartes/:id', component: vueLoader('views/debateSurCarte')},
+        {path: '/debats-sur-cartes/:id/restitution', component: vueLoader('views/restitutionDebateSurCarte')},
         {path: '*', component: vueLoader('views/404')},
     ]
 });
