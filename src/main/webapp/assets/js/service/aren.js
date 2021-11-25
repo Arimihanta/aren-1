@@ -857,6 +857,18 @@ const ApiService = function (anUrl, locale) {
     params.path = "/" + params.id + "/duplicate";
     this.call(params);
   };
+  this.uploadMap = ({ data, onSuccess, onError, onProgress, loading } = {}) => {
+    ajaxCall({
+      method: "POST",
+      path: "documents/map",
+      data: data,
+      onProgress,
+      onSuccess,
+      onError: onError,
+      json: false,
+      loading: loading,
+    });
+  };
   this.Debates.addComment = function (params = {}) {
     params.method = "POST";
     params.path = "/" + params.id + "/comments";

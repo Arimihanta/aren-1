@@ -26,7 +26,7 @@
 
     <template v-slot:right>
       <span
-        :disabled="document.mapLink.length<=0"
+        :disabled="!imgUrl"
         v-if="editionMode"
         class="waves-effect waves-light btn"
         @click="saveDocument()"
@@ -59,6 +59,7 @@
           style="visibility: hidden;"
           type="file"
           @change="onCartoSelected"
+          accept=".jpg"
         />
       </div>
       <div class="cartoInformation-bloc">
@@ -185,15 +186,24 @@ module.exports = {
     },
     saveDocument() {
       this.editionMode = false;
-      //this.document.mapLink = this.getBase64Image();
-      ArenService.Documents.createOrUpdate({
-        data: this.document,
-        onSuccess: (document) => {
-          if (this.$route.params.id === "new") {
-            this.$router.push("/documents-debats-sur-cartes/" + document.id);
-          }
+      ArenService.uploadMap({
+        data: this.selectedCarto,
+        onSuccess: ({name}) => {
+          //console.log(name);
+          this.document.mapLink = name;
+          ArenService.Documents.createOrUpdate({
+            data: this.document,
+            onSuccess: (document) => {
+              if (this.$route.params.id === "new") {
+                this.$router.push("/documents-debats-sur-cartes/" + document.id);
+              }
+            },
+          });
         },
-      });
+        onError: (err) => {
+          console.log(err);
+        }
+      })
     },
     copyDocument(from, to) {
       to.name = from.name;
@@ -202,30 +212,13 @@ module.exports = {
     },
     onCartoSelected(event) {
       const file = event.target.files[0];
-      this.selectedCarto = file;
+
+      let formData = new FormData();
+      formData.append("file", file, file.name);
+      this.selectedCarto = formData;
+
       this.imgUrl = URL.createObjectURL(file);
-      this.document.mapLink = this.getBase64Image();
     },
-    getBase64Image() {
-      // Create an empty canvas element
-      let img = document.getElementById("mapImg");
-      var canvas = document.createElement("canvas");
-      canvas.width = img.width;
-      canvas.height = img.height;
-
-      // Copy the image contents to the canvas
-      var ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-
-      // Get the data-URL formatted image
-      // Firefox supports PNG and JPEG. You could check img.src to
-      // guess the original format, but be aware the using "image/jpg"
-      // will re-encode the image.
-      var dataURL = canvas.toDataURL("image/png");
-      //let dt = dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-      console.log(dataURL);
-      return dataURL;
-  }
   },
   components: {
     "wysiwyg-editor": vueLoader("components/widgets/wysiwygEditor"),
