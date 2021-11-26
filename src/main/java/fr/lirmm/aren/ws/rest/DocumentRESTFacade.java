@@ -15,6 +15,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import java.io.*;
+import java.net.URLDecoder;
 import java.util.Set;
 
 /**
@@ -102,7 +103,10 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
     public Response uploadPdfFile(@FormDataParam("file") InputStream fileInputStream,
                                   @FormDataParam("file") FormDataContentDisposition fileMetaData) throws Exception
     {
-        File UPLOAD_PATH = new File("/tmp/img/");
+        String path=this.getClass().getClassLoader().getResource("").getPath() ;
+        String fullPath= URLDecoder.decode(path,"UTF-8") ;
+        System.out.println(fullPath.replace("WEB-INF/classes/","assets/img/carto"));
+        File UPLOAD_PATH = new File(fullPath.replace("WEB-INF/classes/","assets/img/carto"));
         if (! UPLOAD_PATH.exists()){
             UPLOAD_PATH.mkdir();
         }
@@ -111,7 +115,7 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
         {
             int read = 0;
             byte[] bytes = new byte[1024];
-            String filename=UPLOAD_PATH +"carto"+System.currentTimeMillis()+ fileMetaData.getFileName().substring(fileMetaData.getFileName().lastIndexOf(".")) ;
+            String filename=UPLOAD_PATH +"//carto"+System.currentTimeMillis()+ fileMetaData.getFileName().substring(fileMetaData.getFileName().lastIndexOf(".")) ;
             File file=new File(filename) ;
             OutputStream out = new FileOutputStream(file);
             while ((read = fileInputStream.read(bytes)) != -1)
@@ -121,7 +125,7 @@ public class DocumentRESTFacade extends AbstractRESTFacade<Document> {
             out.flush();
             out.close();
 
-            uploadedFile.setName(file.getAbsolutePath());
+            uploadedFile.setName(file.getName());
         } catch (IOException e)
         {
             throw new WebApplicationException("Error while uploading file. Please try again !!");
