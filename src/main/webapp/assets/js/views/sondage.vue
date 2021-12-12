@@ -3,7 +3,7 @@
     <base-layout id="voting">
       <template v-slot:title>
         <h1>Sondage</h1>
-        <div v-if="loggedUser.is('ADMIN') || loggedUser.is('SUPERADMIN')">
+        <div v-if="user.is('ADMIN') || user.is('SUPERADMIN')">
           <button
             title="Supprimer le sondage"
             class="delete-btn space-top"
@@ -238,10 +238,6 @@
 </style>
 <script>
 const getUrl = window.location;
-// let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split("/")[1];
-// if (baseUrl.endsWith("/")) {
-//   baseUrl = baseUrl.slice(0, -1);
-// }
 let baseUrl = getUrl.protocol + "//" + getUrl.host;
 module.exports = {
   data() {
@@ -249,116 +245,84 @@ module.exports = {
       user: false,
       theme: false,
       choices: [],
-      votes: [],
-      loggedUser: false,
+      votes: false,
     };
   },
   created() {
-    this.fetchTheme();
-    this.fetchUser();
-    this.fetchVotes();
+    if (!this.$root.user.is("USER")) {
+      this.$router.push("/404");
+      return;
+    }
     this.getCurrentUser();
+    this.fetchTheme();
+    this.fetchVotes();
   },
   methods: {
-    getCurrentUser: function () {
+    getCurrentUser() {
       ArenService.Users.getLoged({
         onSuccess: (logedUser) => {
-          this.loggedUser = logedUser;
-          console.log(logedUser)
-          ArenService.NotificationListener.listen({
-            onMessage: (notif) => {
-              this.user.notifications.push(notif);
-              let message = this.$t(
-                "notification." + notif.content.message,
-                notif.content.details
-              );
-              this.$toast(message);
-              new BrowserNotification("AREN", {
-                body: message,
-              });
-            },
-          });
-        },
-        onError: (e) => {
-          this.logout();
+          this.user = logedUser;
         },
       });
     },
-    fetchUser: async function () {
-      const _user = await axios.get(`${baseUrl}/ws/users/me`);
-      this.user = _user.data;
-      console.log(this.user);
+    fetchTheme() {
+      ArenService.Sondage.get({
+        id: this.$route.query.id,
+        onSuccess: (myTheme) => {
+          this.theme = myTheme;
+          this.choices = [...myTheme.choices];
+        },
+      });
     },
-    fetchTheme: async function () {
-      try {
-        const myTheme = await axios.get(
-          `${baseUrl}/ws/themes/${this.$route.query.id}`
-        );
-        this.theme = myTheme.data;
-        this.choices = [...myTheme.data.choices];
-      } catch (error) {
-        console.error(error);
-      }
+    vote(subtheme, opinion) {
+      ArenService.Vote.create({
+        data: {
+          subThemeId: subtheme,
+          authorId: this.user,
+          opinion: opinion,
+        },
+        onSuccess: () => {
+          location.reload();
+        },
+      });
     },
-    vote: async function (subtheme, opinion) {
-      try {
-        const makeVote = await axios({
-          method: "post",
-          url: `${baseUrl}/ws/votes`,
-          data: {
-            subThemeId: subtheme,
-            authorId: this.user,
-            opinion: opinion,
-          },
-        });
-        // console.log(makeVote);
-        location.reload();
-        this.fetchTheme();
-      } catch (error) {
-        console.error(error);
-      }
-    },
-    fetchVotes: async function () {
-      const _votes = await axios.get(`${baseUrl}/ws/votes`);
-      this.votes = [..._votes.data];
-      // console.log(this.votes.filter(el => el.authorId == this.user.id));
-    },
-    checkVoteAvalaibility: function (_subthemeId) {
+    checkVoteAvalaibility(_subthemeId) {
       const userId = this.user.id;
-      const filteredVotes = this.votes.filter((el) => el.authorId == userId);
-
-      const filteredBySubTheme = filteredVotes.map(
-        (el) => el.subThemeId.id || el.subThemeId
-      );
-
-      const arr = filteredBySubTheme.filter((el) => el == _subthemeId);
-
-      return arr.length <= 0;
-    },
-    deleteCurrentSondage: function () {
-      try {
-        swal({
-          title: "Êtes-vous sûr?",
-          text: "Le sondage sera supprimé avec toutes ses informations",
-          icon: "warning",
-          buttons: ["Annuler", true],
-          dangerMode: true,
-        }).then(async (willDelete) => {
-          if (willDelete) {
-            let _ = await axios.delete(
-              `${baseUrl}/ws/themes/delete/${this.$route.query.id}`
-            );
-            swal("Succès!", "Le sondage a été supprimé", "success").then(
-              (value) => {
-                location.href = baseUrl;
-              }
-            );
-          }
-        });
-      } catch (error) {
-        swal("Erreur!", `${error}`, "error");
-        console.log(error);
+      if (this.votes) {
+        const filteredVotes = this.votes?.filter(
+          (el) => el.authorId?.id == userId
+        );
+        const filteredBySubTheme = filteredVotes.map(
+          (el) => el.subThemeId?.id ?? el.subThemeId
+        );
+        const arr = filteredBySubTheme.filter((el) => el == _subthemeId);
+        return arr.length <= 0;
       }
+      return false;
+    },
+    fetchVotes() {
+      ArenService.Vote.getAll({
+        onSuccess: (f_votes) => (this.votes = f_votes),
+      });
+    },
+    deleteCurrentSondage() {
+      this.$confirm({
+        title: "Êtes-vous sûr?",
+        message: "Le sondage sera supprimé avec toutes ses informations",
+        callback: (returnValue) => {
+          if (returnValue) {
+            ArenService.Sondage.removeCurrent({
+              data: { id: this.$route.query.id, sondage: this.theme },
+              onSuccess: () =>
+                swal("Succès!", "Le sondage a été supprimé", "success").then(
+                  (value) => {
+                    this.$router.push("/");
+                  }
+                ),
+            });
+          }
+        },
+      });
     },
   },
 };

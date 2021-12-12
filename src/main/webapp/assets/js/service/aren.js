@@ -317,6 +317,8 @@ User.prototype.oneToMany = {
   comments: [Comment, "owner"],
   createdDebates: [Debate, "owner"],
   notifications: [Notification, "owner"],
+  sondage: [Sondage, "author"],
+  vote: [Vote, "authorId"],
 };
 User.prototype.manyToOne = {
   institution: [Institution, "users"],
@@ -336,6 +338,69 @@ User.prototype.is = function (authority) {
   return Authority._value[this.authority] >= Authority._value[authority];
 };
 
+function Vote(obj = {}) {
+  Entity.call(this, obj);
+}
+Vote.prototype.attrs = {
+  id: Number,
+  opinion: String,
+  createdAt: Date,
+};
+Vote.prototype.manyToOne = {
+  authorId: [User, "vote"],
+  subThemeId: [Sondage, "sondage"],
+  vote: [Choice, "votes"]
+};
+function Choice(obj = {}) {
+  Entity.call(this, obj);
+}
+Choice.prototype.attrs = {
+  id: Number,
+  title: String,
+  description: String,
+  url: String,
+  img: String,
+  neutral: Number,
+  against: Number,
+  for: Number,
+  createdAt: Date,
+};
+Choice.prototype.manyToOne = {
+  themeId: [Sondage, "choices"],
+};
+Choice.prototype.oneToMany = {
+  votes: [Vote, "vote"],
+};
+function Agenda(obj = {}) {
+  Entity.call(this, obj);
+}
+Agenda.prototype.attrs = {
+  id: Number,
+  title: String,
+  description: String,
+  url: String,
+  date: Date,
+};
+
+function Sondage(obj = {}) {
+  Entity.call(this, obj);
+}
+Sondage.prototype.attrs = {
+  id: Number,
+  title: String,
+  description: String,
+  url: String,
+  createdAt: Date,
+  expiracyDate: Date,
+};
+Sondage.prototype.manyToOne = {
+  author: [User, "sondage"],
+};
+Sondage.prototype.oneToMany = {
+  sondage: [Vote, "subThemeId"],
+  choices: [Choice, "themeId"],
+};
+
 const ApiService = function (anUrl, locale) {
   let self = this;
 
@@ -349,6 +414,10 @@ const ApiService = function (anUrl, locale) {
       this.Notification = [];
       this.Team = [];
       this.User = [];
+      this.Sondage = [];
+      this.Agenda = [];
+      this.Choice = [];
+      this.Vote = [];
     },
     detach(obj) {
       this[obj.constructor.name].remove(obj);
@@ -443,8 +512,8 @@ const ApiService = function (anUrl, locale) {
           );
           if (manyToOne[foreignKey][1]) {
             let foreignCollection = that[foreignKey][manyToOne[foreignKey][1]];
-            if (!foreignCollection.includes(that)) {
-              foreignCollection.push(that);
+            if (!(foreignCollection?.includes(that))) {
+              foreignCollection?.push(that);
             }
           }
         }
@@ -789,6 +858,10 @@ const ApiService = function (anUrl, locale) {
   this.Notifications = new EntityProcessor("notifications", Notification);
   this.CommentListener = new Listener("comments", Comment);
   this.NotificationListener = new Listener("notifications", Notification);
+  this.Agenda = new EntityProcessor("agenda/calendars", Agenda);
+  this.Sondage = new EntityProcessor("themes", Sondage);
+  this.Choice = new EntityProcessor("choices", Choice);
+  this.Vote = new EntityProcessor("votes", Vote);
 
   this.Users.getLoged = function (params = {}) {
     params.method = "GET";
@@ -976,4 +1049,16 @@ const ApiService = function (anUrl, locale) {
     params.method = "PUT";
     this.call(params);
   };
+  this.Sondage.removeCurrent = function (params = {}) {
+    params.method = "DELETE";
+    params.path = `/delete/${params.data.id}`;
+    let onSuccess = params.onSuccess;
+    params.onSuccess = function () {
+      self.Store.remove(params.data.sondage);
+      if(onSuccess){
+        onSuccess();
+      }
+    }
+    this.call(params);
+  }
 };

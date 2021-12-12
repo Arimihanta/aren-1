@@ -114,7 +114,8 @@ module.exports = {
     return {
       categories: false,
       agenda: [],
-      sondages: [],
+      // sondages: [],
+      sondages: false,
     };
   },
   created() {
@@ -141,13 +142,19 @@ module.exports = {
     },
 
     //Fetch sondages
-    async fetchSondages() {
-      try {
-        let agenda = await axios.get(`${baseUrl}/ws/themes`);
-        this.sondages.push(...agenda.data);
-      } catch (expetion) {
-        console.error(expetion);
-      }
+    // async fetchSondages() {
+    //   try {
+    //     let agenda = await axios.get(`${baseUrl}/ws/themes`);
+    //     this.sondages.push(...agenda.data);
+    //   } catch (expetion) {
+    //     console.error(expetion);
+    //   }
+    // },
+
+    fetchSondages() {
+      ArenService.Sondage.getAll({
+        onSuccess: (sondages)=>(this.sondages = sondages),
+      })
     },
   },
 };
