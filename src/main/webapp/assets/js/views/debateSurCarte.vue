@@ -21,7 +21,7 @@
               <div id="mapContainer">
                 <img
                   id="mapImg"
-                  :src="debate.document.mapLink"
+                  :src="debate?.document?.mapLink"
                   alt="map image"
                 />
                 <table id="myTable" v-if="debate">
@@ -116,11 +116,11 @@ table {
   border-collapse: collapse;
   position: absolute;
   top: 0;
-  width: 100%;
   height: 100%;
 }
 #mapContainer {
   position: relative;
+  height: 50%;
 }
 #mapImg {
   width: 100%;
@@ -134,8 +134,6 @@ table {
 module.exports = {
   data() {
     return {
-      //nbOfLines: 5,
-      //nbOfColumns: 9,
       arrayData: false,
       // ********************************
 

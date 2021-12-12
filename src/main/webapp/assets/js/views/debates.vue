@@ -60,7 +60,9 @@
                     query: categoryId ? {category: categoryId, overview: true} : {overview: true},
                     onSuccess: debates => debates.forEach(d => {
                             if (!this.categories.includes(d.document.category)) {
-                                this.categories.push(d.document.category)
+                                if(!(d.document.category.is("CARTO"))){
+                                    this.categories.push(d.document.category);
+                                }
                             }
                         })
                 });

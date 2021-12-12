@@ -15,7 +15,7 @@
           class="col"
         >
           <router-link
-            v-bind:to="'/debates?category=' + category.id"
+            v-bind:to="`${category.is('CARTO') ? '/debats-sur-cartes?category=' + category.id : '/debates?category=' + category.id }`"
             class="card hoverable center-align"
           >
             <div class="card-image light-color valign-wrapper">
